@@ -7,6 +7,7 @@ import java.util.List;
 public interface EnvironmentService {
 
     List<Environment> getAll();
+
     Environment getById(Long id);
 
 }

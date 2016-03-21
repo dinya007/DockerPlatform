@@ -1,27 +1,27 @@
 package ru.tisov.denis.platform.services.impl;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.tisov.denis.platform.da.EnvironmentDAO;
+import org.springframework.stereotype.Service;
+import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.domain.Environment;
 import ru.tisov.denis.platform.services.EnvironmentService;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class EnvironmentServiceImpl implements EnvironmentService {
 
+    private final EnvironmentDao environmentDAO;
+
     @Autowired
-    private EnvironmentDAO environmentDAO;
+    public EnvironmentServiceImpl(EnvironmentDao environmentDAO) {
+        this.environmentDAO = environmentDAO;
+    }
 
     @Override
     public List<Environment> getAll() {
-        List<Environment> result = new ArrayList<>();
-        for (Environment environment: environmentDAO.findAll()) {
-            result.add(environment);
-        }
-        return result;
+        return Lists.newArrayList(environmentDAO.findAll());
     }
 
     @Override

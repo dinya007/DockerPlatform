@@ -30,6 +30,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-freemarker'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.hsqldb:hsqldb'
+    compile 'com.google.guava:guava'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 

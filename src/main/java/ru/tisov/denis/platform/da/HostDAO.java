@@ -2,11 +2,11 @@ package ru.tisov.denis.platform.da;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.tisov.denis.platform.domain.Environment;
+import ru.tisov.denis.platform.domain.Host;
 
 @Repository
-public interface EnvironmentDao extends CrudRepository<Environment, Long> {
+public interface HostDao extends CrudRepository<Host, Long> {
 
-    Environment getById(Long id);
+    Host findById(Long id);
 
 }

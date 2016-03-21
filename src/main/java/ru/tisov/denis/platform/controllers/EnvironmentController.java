@@ -10,8 +10,13 @@ import ru.tisov.denis.platform.services.EnvironmentService;
 @Controller
 public class EnvironmentController {
 
+    private final EnvironmentService environmentService;
+
     @Autowired
-    private EnvironmentService environmentService;
+    public EnvironmentController(EnvironmentService environmentService) {
+        this.environmentService = environmentService;
+    }
+
 
     @RequestMapping("/env/")
     public String getAllEnvironments(Model model) {
