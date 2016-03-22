@@ -17,6 +17,8 @@ CREATE TABLE hosts
   host_id        INTEGER IDENTITY PRIMARY KEY NOT NULL,
   url            VARCHAR(50),
   name           VARCHAR(100),
+  host_path      VARCHAR(500),
+  registry_flag  BOOLEAN,
   created_date   TIMESTAMP,
   modified_date  TIMESTAMP,
 );

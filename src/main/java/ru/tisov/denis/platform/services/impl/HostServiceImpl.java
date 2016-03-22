@@ -25,6 +25,11 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
+    public Host getByName(String hostName) {
+        return hostDao.getByName(hostName);
+    }
+
+    @Override
     public List<Host> getAll() {
         return Lists.newArrayList(hostDao.findAll());
     }
@@ -32,5 +37,10 @@ public class HostServiceImpl implements HostService {
     @Override
     public List<Host> getAll(List<Long> ids) {
         return Lists.newArrayList(hostDao.findAll(ids));
+    }
+
+    @Override
+    public Host getRegistryHost() {
+        return hostDao.getHostByIsRegistry(true);
     }
 }

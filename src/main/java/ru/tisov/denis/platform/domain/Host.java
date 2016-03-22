@@ -15,6 +15,9 @@ public class Host {
     private Long id;
     private String url;
     private String name;
+    private String hostPath;
+    @Column(name = "registry_flag")
+    private boolean isRegistry;
     //TODO change to LocalDateTime
     private Date createdDate;
     private Date modifiedDate;
@@ -60,5 +63,21 @@ public class Host {
 
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public String getHostPath() {
+        return hostPath;
+    }
+
+    public void setHostPath(String hostPath) {
+        this.hostPath = hostPath;
+    }
+
+    public boolean isRegistry() {
+        return isRegistry;
+    }
+
+    public void setRegistry(boolean registry) {
+        isRegistry = registry;
     }
 }

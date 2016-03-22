@@ -8,9 +8,12 @@ public interface HostService {
 
     Host getById(Long id);
 
+    Host getByName(String hostName);
+
     List<Host> getAll();
 
     List<Host> getAll(List<Long> ids);
 
+    Host getRegistryHost();
 
 }

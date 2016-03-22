@@ -1,22 +1,20 @@
 package ru.tisov.denis.platform.controllers;
 
-import com.github.dockerjava.api.DockerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tisov.denis.platform.configuration.DockerConfig;
+import ru.tisov.denis.platform.docker.DockerServiceFactory;
+import ru.tisov.denis.platform.services.DockerService;
 
 @RestController
 public class InfoController {
 
     @Autowired
-    private DockerConfig dockerConfig;
+    private DockerServiceFactory dockerServiceFactory;
 
     @RequestMapping("/info")
     public String getInfo() {
-        DockerClient dockerClient = dockerConfig.getDockerClient();
-        StringBuilder result = new StringBuilder();
-        dockerClient.listContainersCmd().exec().forEach(container -> result.append(container.getId()));
-        return result.toString();
+        DockerService dockerService = dockerServiceFactory.getDockerService("default");
+        return dockerService.getRegistryImages();
     }
 }
