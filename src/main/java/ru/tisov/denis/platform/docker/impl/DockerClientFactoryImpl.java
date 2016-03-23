@@ -22,6 +22,7 @@ public class DockerClientFactoryImpl implements DockerClientFactory {
 
     @Autowired
     private HostService hostService;
+
     @Value("${registry.url}")
     private String registryUrl;
 

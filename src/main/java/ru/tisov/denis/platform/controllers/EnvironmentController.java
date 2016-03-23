@@ -18,7 +18,7 @@ public class EnvironmentController {
     }
 
 
-    @RequestMapping("/env/")
+    @RequestMapping(value = {"/env/", "/*"})
     public String getAllEnvironments(Model model) {
         model.addAttribute("environments", environmentService.getAll());
         return "environments";

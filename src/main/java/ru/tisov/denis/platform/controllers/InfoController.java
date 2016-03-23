@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
+import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.services.DockerService;
+
+import java.util.List;
 
 @RestController
 public class InfoController {
@@ -13,7 +16,7 @@ public class InfoController {
     private DockerServiceFactory dockerServiceFactory;
 
     @RequestMapping("/info")
-    public String getInfo() {
+    public List<Image> getInfo() {
         DockerService dockerService = dockerServiceFactory.getDockerService("default");
         return dockerService.getRegistryImages();
     }

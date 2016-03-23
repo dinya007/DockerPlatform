@@ -9,4 +9,8 @@ public interface HostDao extends CrudRepository<Host, Long> {
 
     Host findById(Long id);
 
+    Host getByName(String hostName);
+
+    Host getHostByIsRegistry(boolean isRegistry);
+
 }

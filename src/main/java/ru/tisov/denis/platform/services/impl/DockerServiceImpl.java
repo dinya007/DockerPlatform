@@ -1,19 +1,21 @@
 package ru.tisov.denis.platform.services.impl;
 
-import com.github.dockerjava.api.DockerClient;
-import org.springframework.web.client.RestTemplate;
+import ru.tisov.denis.platform.da.DockerDao;
+import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.services.DockerService;
+
+import java.util.List;
 
 public class DockerServiceImpl implements DockerService {
 
-    private final DockerClient dockerClient;
-    private RestTemplate restTemplate = new RestTemplate();
+    private final DockerDao dockerDao;
 
-    public DockerServiceImpl(DockerClient dockerClient) {
-        this.dockerClient = dockerClient;
+    public DockerServiceImpl(DockerDao dockerDao) {
+        this.dockerDao = dockerDao;
     }
 
-    public String getRegistryImages() {
-        return restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/_catalog", String.class);
+    public List<Image> getRegistryImages() {
+        return dockerDao.getRegistryImages();
+
     }
 }
