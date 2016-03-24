@@ -29,6 +29,7 @@ public class HostController {
 
         model.addAttribute("host", host);
         model.addAttribute("images", dockerService.getRegistryImages());
+        model.addAttribute("containers", dockerService.getRunningContainers());
         return "host";
     }
 

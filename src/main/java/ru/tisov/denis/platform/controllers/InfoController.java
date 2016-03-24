@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
 import ru.tisov.denis.platform.domain.Image;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.services.DockerService;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class InfoController {
     private DockerServiceFactory dockerServiceFactory;
 
     @RequestMapping("/info")
-    public List<Image> getInfo() {
+    public List<Container> getInfo() {
         DockerService dockerService = dockerServiceFactory.getDockerService("default");
-        return dockerService.getRegistryImages();
+        return dockerService.getRunningContainers();
     }
 }

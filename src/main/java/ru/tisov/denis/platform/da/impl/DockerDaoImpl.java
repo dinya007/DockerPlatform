@@ -5,10 +5,13 @@ import com.google.common.collect.Lists;
 import org.springframework.web.client.RestTemplate;
 import ru.tisov.denis.platform.da.DockerDao;
 import ru.tisov.denis.platform.domain.Image;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
 import ru.tisov.denis.platform.domain.docker.Repository;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DockerDaoImpl implements DockerDao {
 
@@ -33,5 +36,22 @@ public class DockerDaoImpl implements DockerDao {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Container> getRunningContainers() {
+        List<com.github.dockerjava.api.model.Container> containers = dockerClient.listContainersCmd().exec();
+        return containers.stream().map(new ContainerMapepr()).collect(Collectors.toList());
+    }
+
+    private class ContainerMapepr implements Function<com.github.dockerjava.api.model.Container, Container> {
+
+        @Override
+        public Container apply(com.github.dockerjava.api.model.Container container) {
+            Container result = new Container();
+            result.setName(container.getNames()[0]);
+            result.setAddress(container.getNames()[0]);
+            return result;
+        }
     }
 }
