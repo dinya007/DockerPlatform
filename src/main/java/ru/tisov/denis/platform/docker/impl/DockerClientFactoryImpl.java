@@ -30,14 +30,14 @@ public class DockerClientFactoryImpl implements DockerClientFactory {
 
     public DockerClient getDockerClient(String hostName) {
 
-        Optional<String> optionalHost = hosts.keySet().stream().filter(host -> host.equals(host)).findFirst();
+        Optional<String> optionalHost = hosts.keySet().stream().filter(host -> host.equals(hostName)).findFirst();
         if (optionalHost.isPresent()) {
             return hosts.get(optionalHost.get());
         }
 
         Host host = hostService.getByName(hostName);
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost(host.getUrl())
+                .withDockerHost("tcp://" + host.getUrl() + ":2376")
                 .withDockerCertPath(host.getHostPath())
                 .withRegistryUrl(registryUrl)
                 .build();

@@ -9,6 +9,7 @@ import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
 import ru.tisov.denis.platform.domain.docker.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,9 +50,13 @@ public class DockerDaoImpl implements DockerDao {
         @Override
         public Container apply(com.github.dockerjava.api.model.Container container) {
             Container result = new Container();
+            result.setId(container.getId());
             result.setName(container.getNames()[0]);
-            result.setAddress(container.getNames()[0]);
+            result.setPort(container.getPorts()[0].getPublicPort().toString());
+            result.setNetworks(Lists.newArrayList(container.getNetworkSettings().getNetworks().keySet()));
+            result.setStatus(container.getStatus());
             return result;
         }
     }
+
 }

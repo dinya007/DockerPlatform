@@ -3,8 +3,8 @@ INSERT INTO ENVIRONMENTS (name, CREATED_DATE, MODIFIED_DATE) VALUES ('qa', SYSDA
 COMMIT;
 
 
-INSERT INTO HOSTS (url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES ('tcp://192.168.99.100:2376', 'default', '/Users/denis/.docker/machine/machines/default', TRUE , SYSDATE, SYSDATE);
-INSERT INTO HOSTS (url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES ('tcp://192.168.99.100:2376', 'test-machine', '/Users/denis/.docker/machine/machines/default', FALSE , SYSDATE, SYSDATE);
+INSERT INTO HOSTS (url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES ('192.168.99.100', 'default', '/Users/denis/.docker/machine/machines/default', TRUE , SYSDATE, SYSDATE);
+INSERT INTO HOSTS (url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES ('192.168.99.101', 'test-machine', '/Users/denis/.docker/machine/machines/default', FALSE , SYSDATE, SYSDATE);
 COMMIT;
 
 INSERT INTO rel_environments_hosts (environment_id, host_id) VALUES (0, 0);
