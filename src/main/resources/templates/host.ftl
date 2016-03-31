@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <script src="/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
     <script src="/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
@@ -17,86 +18,149 @@
 
         $(document).ready(function () {
 
-            $(".container-start").click(function () {
+            $(".container-create-and-start").click(function () {
                 var createContainerAction = {}
-                createContainerAction.hostName = $(this).attr('host-name');
-                createContainerAction.imageName = $(this).attr("image-name");
-                createContainerAction.imageTag = $(this).attr("image-tag");
+                createContainerAction.hostName = $("#hostName").attr("host-name");
+                createContainerAction.imageName = $(this).prev().prev().val();
+
+                $.putRq("/action/createStartContainer", JSON.stringify(createContainerAction), null);
+            });
+
+            $(".container-create").click(function () {
+                var createContainerAction = {}
+                createContainerAction.hostName = $("#hostName").attr("host-name");
+                createContainerAction.imageName = $(this).prev().val();
 
                 $.putRq("/action/createContainer", JSON.stringify(createContainerAction), null);
             });
 
+            $(".container-start").click(function () {
+                $.postRq("/action/startContainer", JSON.stringify(getContainerAction(this)), null);
+            });
+
 
             $(".container-stop").click(function () {
-                var stopContainerAction = {}
-                stopContainerAction.hostName = $(this).attr('host-name');
-                stopContainerAction.containerId = $(this).attr("container-id");
-
-                $.postRq("/action/stopContainer", JSON.stringify(stopContainerAction), null);
+                $.postRq("/action/stopContainer", JSON.stringify(getContainerAction(this)), null);
             });
 
             $(".container-remove").click(function () {
-                var removeContainerAction = {}
-                removeContainerAction.hostName = $(this).attr('host-name');
-                removeContainerAction.containerId = $(this).attr("container-id");
-
-                $.deleteRq("/action/removeContainer", JSON.stringify(removeContainerAction), null);
+                $.deleteRq("/action/removeContainer", JSON.stringify(getContainerAction(this)), null);
             });
+
+            $(".container-restart").click(function () {
+                $.postRq("/action/restartContainer", JSON.stringify(getContainerAction(this)), null);
+            });
+
+            var getContainerAction = function(thisRef) {
+                var containerAction = {}
+                containerAction.hostName = $(thisRef).attr('host-name');
+                containerAction.containerId = $(thisRef).attr("container-id");
+                return containerAction;
+            }
+
 
         });
     </script>
 
+    <style>
+        select {
+            width: 100px;
+        }
+    </style>
 </head>
 
 <body>
 
-    Host name: ${host.name}
+    <span id="hostName" host-name="${host.name}">Host name: ${host.name}</span>
     <br/>
     Host url: ${host.url}
     </br></br>
-    Available images from registry:
+    <b>-----------------------------------------------</b>
     </br>
-
-    <#list images as image>
-    <span style="margin-left:2em">${image.name}</span>
-        </br>
-        <#list image.tags as tag>
-            <span style="margin-left:4em">${tag} <button class="container-start" host-name="${host.name}" image-name="${image.name}" image-tag="${tag}">start</button></span>
-            </br>
-        </#list>
-    </br>
-
-    <#else>
-    There are no available images
-    </#list>
-
-</br>
-Running containers:
+    <b>Running containers:</b>
     </br>
     -----------------------------------------------
     <br/>
-    <#list containers as container>
-    <span style="margin-left:2em">Name: ${container.name} </span>
+    <#list runningContainers as container>
+    <span class="space-2">Name: ${container.name} </span>
     </br>
-    <span style="margin-left:2em">Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a> </span>
+    <span class="space-2">Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a> </span>
     </br>
-    <span style="margin-left:2em">Status: ${container.status} </span>
+    <span class="space-2">Status: ${container.status} </span>
+    </br>
+    <span class="space-2">Base image: ${container.baseImage} </span>
     <br/>
-    <span style="margin-left:2em">Networks: </span>
+    <span class="space-2">Networks: </span>
         <#list container.networks as network>
         </br>
-        <span style="margin-left:4em">Name: ${network} </span>
+        <span class="space-4">Name: ${network} </span>
         </#list>
     </br>
-    <button class="container-remove" host-name="${host.name}" container-id="${container.id}">remove</button>
+    <button class="container-restart" host-name="${host.name}" container-id="${container.id}">restart</button>
     <button class="container-stop" host-name="${host.name}" container-id="${container.id}">stop</button>
+    <button class="container-remove" host-name="${host.name}" container-id="${container.id}">remove</button>
     </br>
     -----------------------------------------------
     </br>
     <#else>
-    <span style="margin-left:2em">There are no running containers</span>
+    <span class="space-2">There are no running containers</span>
     </#list>
+    </br></br>
+    <b>-----------------------------------------------</b>
+    </br>
+    <b>Stopped containers:</b>
+    </br>
+    -----------------------------------------------
+    <br/>
+    <#list stoppedContainers as container>
+    <span class="space-2">Name: ${container.name} </span>
+    </br>
+    <span class="space-2">Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a> </span>
+    </br>
+    <span class="space-2">Status: ${container.status} </span>
+    </br>
+    <span class="space-2">Base image: ${container.baseImage} </span>
+    <br/>
+    <span class="space-2">Networks: </span>
+        <#list container.networks as network>
+        </br>
+        <span class="space-4">Name: ${network} </span>
+        </#list>
+    </br>
+    <button class="container-start" host-name="${host.name}" container-id="${container.id}">start</button>
+    <button class="container-remove" host-name="${host.name}" container-id="${container.id}">remove</button>
+    </br>
+    -----------------------------------------------
+    </br>
+    <#else>
+    <span class="space-2">There are no stopped containers</span>
+    </#list>
+    </br>
+    <b>-----------------------------------------------</b>
+    </br>
+    <b>Available images from registry:</b>
+    </br>
+    <#list images as image>
+    -----------------------------------------------
+    </br>
+    <span class="space-2">${image.name}</span>
+        <select>
+            <#list image.tags as tag>
+                <option value="${image.name}:${tag}">${tag}</option>
+            </#list>
+        </select>
+    <button class="container-create">create</button>
+    <button class="container-create-and-start">start</button>
+    </br>
+    <#else>
+    </br>
+    <span class="space-2">There are no available images</span>
+    </#list>
+    </br>
+    <b>-----------------------------------------------</b>
 
+
+</br>
 
 </body>
 

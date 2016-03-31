@@ -1,17 +1,10 @@
 package ru.tisov.denis.platform.controllers.dto;
 
-public class ContainerCreationDto {
+public class ContainerStartDto {
 
-    private String imageName;
     private String hostName;
+    private String containerId;
 
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
 
     public String getHostName() {
         return hostName;
@@ -21,4 +14,11 @@ public class ContainerCreationDto {
         this.hostName = hostName;
     }
 
+    public String getContainerId() {
+        return containerId;
+    }
+
+    public void setContainerId(String containerId) {
+        this.containerId = containerId;
+    }
 }

@@ -9,6 +9,9 @@ public interface DockerDao {
 
     List<Image> getRegistryImages();
 
+    List<Container> getAllContainers();
+
     List<Container> getRunningContainers();
 
+    List<Container> getStoppedContainers();
 }

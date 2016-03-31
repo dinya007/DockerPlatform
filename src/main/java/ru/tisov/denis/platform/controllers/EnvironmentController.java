@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.tisov.denis.platform.services.EnvironmentService;
 
 @Controller
-@RequestMapping("/env")
 public class EnvironmentController {
 
     private final EnvironmentService environmentService;
@@ -19,13 +18,13 @@ public class EnvironmentController {
     }
 
 
-    @RequestMapping(value = {"/", "/*"})
+    @RequestMapping(value = {"/env/", "/*"})
     public String getAllEnvironments(Model model) {
         model.addAttribute("environments", environmentService.getAll());
         return "environments";
     }
 
-    @RequestMapping("/{id}")
+    @RequestMapping("/env/{id}")
     public String getEnvironment(@PathVariable Long id, Model model) {
         model.addAttribute("environment", environmentService.getById(id));
         return "environment";

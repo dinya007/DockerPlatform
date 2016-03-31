@@ -15,6 +15,7 @@ public class DockerServiceImpl implements DockerService {
         this.dockerDao = dockerDao;
     }
 
+    @Override
     public List<Image> getRegistryImages() {
         return dockerDao.getRegistryImages();
 
@@ -24,4 +25,16 @@ public class DockerServiceImpl implements DockerService {
     public List<Container> getRunningContainers() {
         return dockerDao.getRunningContainers();
     }
+
+    @Override
+    public List<Container> getAllContainers() {
+        return dockerDao.getAllContainers();
+    }
+
+    @Override
+    public List<Container> getStoppedContainers() {
+        return dockerDao.getStoppedContainers();
+    }
+
+
 }

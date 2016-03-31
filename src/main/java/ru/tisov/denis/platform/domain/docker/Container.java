@@ -9,6 +9,8 @@ public class Container {
     private String port;
     private List<String> networks;
     private String status;
+    private boolean isRunning;
+    private String baseImage;
 
     public Container() {
     }
@@ -51,5 +53,37 @@ public class Container {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public String getBaseImage() {
+        return baseImage;
+    }
+
+    public void setBaseImage(String baseImage) {
+        this.baseImage = baseImage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Container container = (Container) o;
+
+        return id != null ? id.equals(container.id) : container.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
