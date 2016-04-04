@@ -3,18 +3,15 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
       xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
-    <script src="/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
-    <script src="/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+    <script src="/js/jquery.js"></script>
     <script src="/js/utils.js"></script>
-    <link rel="stylesheet" type="text/css" href="/jquery-ui-1.11.4.custom/jquery-ui.min.css">
-    <link rel="stylesheet" type="text/css" href="/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css">
-    <link rel="stylesheet" type="text/css" href="/jquery-ui-1.11.4.custom/jquery-ui.structure.min.css">
     <link rel="stylesheet" type="text/css" href="/css/page.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/js/bootstrap.min.js">
+
 
     <script>
-        $(function() {
-            $("button").button();
-        });
 
         $(document).ready(function () {
 
@@ -51,7 +48,7 @@
                 $.postRq("/action/restartContainer", JSON.stringify(getContainerAction(this)), null);
             });
 
-            var getContainerAction = function(thisRef) {
+            var getContainerAction = function (thisRef) {
                 var containerAction = {}
                 containerAction.hostName = $(thisRef).attr('host-name');
                 containerAction.containerId = $(thisRef).attr("container-id");
@@ -71,96 +68,169 @@
 
 <body>
 
-    <span id="hostName" host-name="${host.name}">Host name: ${host.name}</span>
-    <br/>
-    Host url: ${host.url}
-    </br></br>
-    <b>-----------------------------------------------</b>
-    </br>
-    <b>Running containers:</b>
-    </br>
-    -----------------------------------------------
-    <br/>
-    <#list runningContainers as container>
-    <span class="space-2">Name: ${container.name} </span>
-    </br>
-    <span class="space-2">Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a> </span>
-    </br>
-    <span class="space-2">Status: ${container.status} </span>
-    </br>
-    <span class="space-2">Base image: ${container.baseImage} </span>
-    <br/>
-    <span class="space-2">Networks: </span>
-        <#list container.networks as network>
-        </br>
-        <span class="space-4">Name: ${network} </span>
-        </#list>
-    </br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <h3 id="hostName" host-name="${host.name}">Host name: ${host.name}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col lg-3">
+            <h3>Host url: ${host.url}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h4>Running containers:</h4>
+
+
+<#list runningContainers as container>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Name: ${container.name} </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a></p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Status: ${container.status}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Base image: ${container.baseImage}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Networks: </p>
+            <div class="container">
+                <div class="col-lg-3">
+                    <#list container.networks as network>
+                        <div class="row">Name: ${network}</div>
+                    </#list>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button class="container-restart" host-name="${host.name}" container-id="${container.id}">restart</button>
     <button class="container-stop" host-name="${host.name}" container-id="${container.id}">stop</button>
     <button class="container-remove" host-name="${host.name}" container-id="${container.id}">remove</button>
-    </br>
-    -----------------------------------------------
-    </br>
-    <#else>
+<#else>
     <span class="space-2">There are no running containers</span>
-    </#list>
-    </br></br>
-    <b>-----------------------------------------------</b>
-    </br>
-    <b>Stopped containers:</b>
-    </br>
-    -----------------------------------------------
-    <br/>
-    <#list stoppedContainers as container>
-    <span class="space-2">Name: ${container.name} </span>
-    </br>
-    <span class="space-2">Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a> </span>
-    </br>
-    <span class="space-2">Status: ${container.status} </span>
-    </br>
-    <span class="space-2">Base image: ${container.baseImage} </span>
-    <br/>
-    <span class="space-2">Networks: </span>
-        <#list container.networks as network>
-        </br>
-        <span class="space-4">Name: ${network} </span>
-        </#list>
-    </br>
+</#list>
+
+</div>
+
+
+<div class="container">
+    <h4>Stopped containers:</h4>
+
+
+<#list stoppedContainers as container>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Name: ${container.name} </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Address: <a href="http://${host.url}:${container.port}"> http://${host.url}:${container.port} </a></p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Status: ${container.status}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Base image: ${container.baseImage}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <p>Networks: </p>
+            <div class="container">
+                <div class="col-lg-3">
+                    <#list container.networks as network>
+                        <div class="row">Name: ${network}</div>
+                    </#list>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button class="container-start" host-name="${host.name}" container-id="${container.id}">start</button>
     <button class="container-remove" host-name="${host.name}" container-id="${container.id}">remove</button>
-    </br>
-    -----------------------------------------------
-    </br>
-    <#else>
+<#else>
     <span class="space-2">There are no stopped containers</span>
-    </#list>
-    </br>
-    <b>-----------------------------------------------</b>
-    </br>
-    <b>Available images from registry:</b>
-    </br>
+</#list>
+
+</div>
+
+
+<table class="table table-striped table-bordered text-center">
+    <caption><h4>Available images from registry</h4></caption>
+    <tbody>
     <#list images as image>
-    -----------------------------------------------
-    </br>
-    <span class="space-2">${image.name}</span>
-        <select>
-            <#list image.tags as tag>
-                <option value="${image.name}:${tag}">${tag}</option>
-            </#list>
-        </select>
-    <button class="container-create">create</button>
-    <button class="container-create-and-start">start</button>
-    </br>
+    <tr>
+
+        <td>${image.name}</td>
+        <td>
+            <select>
+                <#list image.tags as tag>
+                    <option value="${image.name}:${tag}">${tag}</option>
+                </#list>
+            </select>
+        </td>
+        <td>
+            <button class="container-create">create</button>
+        </td>
+        <td>
+            <button class="container-create-and-start">start</button>
+        </td>
+    </tr>
     <#else>
-    </br>
-    <span class="space-2">There are no available images</span>
+    <tr>
+        <td>There are no available images</td>
+    </tr>
     </#list>
-    </br>
-    <b>-----------------------------------------------</b>
+    </tbody>
 
 
-</br>
+</table>
+<div class="container">
+    <div class="col-lg-3">
+        <p>
+        <h4></h4>
+        </p>
+    </div>
+</div>
+<div class="conatainer">
+    <div class="col-lg-3">
+
+
+    </div>
+
+</div>
 
 </body>
 

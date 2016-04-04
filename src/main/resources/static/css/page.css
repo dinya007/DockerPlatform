@@ -3,11 +3,8 @@ body {
     font-size: 14px;
 }
 
-.space-2 {
-    margin-left: 2em
-}
 
-.space-4 {
-    margin-left: 4em
+table caption {
+    text-align: center;
 }
 
