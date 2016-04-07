@@ -2,17 +2,20 @@ package ru.tisov.denis.platform.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
 import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.Image;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.services.DockerService;
 import ru.tisov.denis.platform.services.HostService;
 
 import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/hosts")
@@ -28,23 +31,46 @@ public class HostController {
     }
 
     @RequestMapping("/{id}")
-    public String getAllEnvironments(@PathVariable Long id, Model model) {
+    public String getAllEnvironments(@PathVariable Long id) {
+        return "host";
+    }
+
+    @ResponseBody
+    @RequestMapping("/{id}/hostInfo")
+    public Host getHostInfo(@PathVariable Long id) {
+        return hostService.getById(id);
+    }
+
+    @ResponseBody
+    @RequestMapping("/{id}/repositoryImages")
+    public List<Image> getRepositoryImages(@PathVariable Long id) {
         Host host = hostService.getById(id);
         DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
 
-        model.addAttribute("host", host);
-        model.addAttribute("runningContainers", dockerService.getRunningContainers());
-        model.addAttribute("stoppedContainers", dockerService.getStoppedContainers());
-
+        List<Image> registryImages;
         try {
-            model.addAttribute("images", dockerService.getRegistryImages());
-        } catch (ResourceAccessException ex) {
-            model.addAttribute("images", Collections.emptyList());
-        } catch (HttpClientErrorException ex) {
-            model.addAttribute("images", Collections.emptyList());
+            registryImages = dockerService.getRegistryImages();
+        } catch (ResourceAccessException | HttpClientErrorException ex) {
+            registryImages=  Collections.emptyList();
         }
-
-        return "host";
+        return registryImages;
     }
+
+    @ResponseBody
+    @RequestMapping("/{id}/runningContainers")
+    public List<Container> getRunningContainers(@PathVariable Long id) {
+        Host host = hostService.getById(id);
+        DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
+        return dockerService.getRunningContainers();
+    }
+
+    @ResponseBody
+    @RequestMapping("/{id}/stoppedContainers")
+    public List<Container> getStoppedContainers(@PathVariable Long id) {
+        Host host = hostService.getById(id);
+        DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
+        return dockerService.getStoppedContainers();
+    }
+
 
 }

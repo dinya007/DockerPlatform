@@ -36,8 +36,8 @@ public class DockerDaoImpl implements DockerDao {
         List<String> imageNames = repository.getImageNames();
 
         for (String imageName : imageNames) {
-            ImageTags tags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/" + imageName + "/tags/list", ImageTags.class);
-            result.add(new Image(imageName, tags.getTags()));
+            ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/" + imageName + "/tags/list", ImageTags.class);
+            if(imageTags.getTags() != null && !imageTags.getTags().isEmpty()) result.add(new Image(imageName, imageTags.getTags()));
         }
 
         return result;
