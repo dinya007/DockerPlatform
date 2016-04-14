@@ -11,9 +11,9 @@
     <script src="/js/selectedImagesController.js"></script>
     <script src="/js/stoppedContainersController.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/page.css">
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="/bootstrap/js/bootstrap.min.js">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/js/bootstrap.js">
     <script>
 
     </script>
@@ -108,8 +108,7 @@
             </select>
         </td>
         <td>
-            <#--<button ng-click="createContainer()">create</button>-->
-            <button data-toggle="modal" data-target="#myModal">create</button>
+            <button ng-click="createContainer()">create</button>
             <button ng-click="createAndStartContainer()">start</button>
         </td>
     </tr>
