@@ -5,7 +5,7 @@
 <head>
     <script src="/js/jquery.js"></script>
     <script src="/js/utils.js"></script>
-    <script src="/angular/angular.min.js"></script>
+    <script src="/angular/angular.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/page.css">
     <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
@@ -14,10 +14,53 @@
 
         var app = angular.module('dockerApp', []);
 
-        app.controller('mainCtrl', ['$scope', '$http', '$location', '$rootScope', function ($scope, $http, $location, $rootScope) {
-            $scope.createContainer = function () {
-                $http.put("/action/createContainer", createContainerAction);
+        app.controller('runningContainersController', ['$scope', '$http', function ($scope, $http) {
+
+            $scope.restartContainer = function () {
+                $http.post("/action/restartContainer/", getContainerAction($scope));
             };
+
+            $scope.stopContainer = function () {
+                $http.post("/action/stopContainer/", getContainerAction($scope));
+            };
+
+            $scope.removeContainer = function () {
+                $http.delete("/action/removeContainer/" + $scope.host.name + "/" + $scope.container.id);
+            };
+
+        }]);
+
+        app.controller('stoppedContainersController', ['$scope', '$http', function ($scope, $http) {
+            $scope.removeContainer = function () {
+                $http.delete("/action/removeContainer/" + $scope.host.name + "/" + $scope.container.id);
+            };
+
+            $scope.startContainer = function () {
+                $http.post("/action/startContainer/", getContainerAction($scope));
+            };
+
+        }]);
+
+        app.controller('selectedImageController', ['$scope', '$http', function ($scope, $http) {
+            $scope.createContainer = function () {
+                var containerCreationDto = {};
+
+                containerCreationDto.hostName = $scope.host.name;
+                containerCreationDto.imageName = $scope.selectedImage;
+                $http.put("/action/createContainer", containerCreationDto);
+            };
+
+            $scope.createAndStartContainer = function () {
+                var createContainerAction = {};
+                createContainerAction.hostName = $scope.host.name;
+                createContainerAction.imageName = $scope.selectedImage;
+
+                $http.put("/action/createStartContainer", createContainerAction);
+            };
+
+        }]);
+
+        app.controller('mainCtrl', ['$scope', '$http', '$location', '$rootScope', function ($scope, $http, $location, $rootScope) {
 
             $http.get(window.location.pathname + "/hostInfo").then(function (data) {
                 $scope.host = data.data;
@@ -46,53 +89,50 @@
 
         }]);
 
-        $(document).ready(function () {
+        var getContainerAction = function(scope) {
+            var containerAction = {};
+            containerAction.hostName = scope.host.name;
+            containerAction.containerId = scope.container.id;
+            return containerAction;
+        };
 
-            $(".container-create-and-start").click(function () {
-                var createContainerAction = {}
-                createContainerAction.hostName = $("#hostName").attr("host-name");
-                createContainerAction.imageName = $(this).prev().prev().val();
-
-                $.putRq("/action/createStartContainer", JSON.stringify(createContainerAction), null);
-            });
-
-            $(".container-create").click(function () {
-
-                var createContainerAction = {}
-                createContainerAction.hostName = $("#hostName").attr("host-name");
-                createContainerAction.imageName = $(this).prev().val();
-
-                $http.put("/action/createContainer", createContainerAction);
-
-//                $.putRq("/action/createContainer", JSON.stringify(createContainerAction), null);
-            });
-
-            $(".container-start").click(function () {
-                $.postRq("/action/startContainer", JSON.stringify(getContainerAction(this)), null);
-            });
-
-
-            $(".container-stop").click(function () {
-                $.postRq("/action/stopContainer", JSON.stringify(getContainerAction(this)), null);
-            });
-
-            $(".container-remove").click(function () {
-                $.deleteRq("/action/removeContainer", JSON.stringify(getContainerAction(this)), null);
-            });
-
-            $(".container-restart").click(function () {
-                $.postRq("/action/restartContainer", JSON.stringify(getContainerAction(this)), null);
-            });
-
-            var getContainerAction = function (thisRef) {
-                var containerAction = {}
-                containerAction.hostName = $(thisRef).attr('host-name');
-                containerAction.containerId = $(thisRef).attr("container-id");
-                return containerAction;
-            }
-
-
-        });
+//        $(document).ready(function () {
+//
+//            $(".container-create-and-start").click(function () {
+//                var createContainerAction = {}
+//                createContainerAction.hostName = $("#hostName").attr("host-name");
+//                createContainerAction.imageName = $(this).prev().prev().val();
+//
+//                $.putRq("/action/createStartContainer", JSON.stringify(createContainerAction), null);
+//            });
+//
+//            $(".container-create").click(function () {
+//
+//                var createContainerAction = {}
+//                createContainerAction.hostName = $("#hostName").attr("host-name");
+//                createContainerAction.imageName = $(this).prev().val();
+//
+//                $http.put("/action/createContainer", createContainerAction);
+//
+////                $.putRq("/action/createContainer", JSON.stringify(createContainerAction), null);
+//            });
+//
+//            $(".container-start").click(function () {
+//                $.postRq("/action/startContainer", JSON.stringify(getContainerAction(this)), null);
+//            });
+//
+//
+//            $(".container-stop").click(function () {
+//                $.postRq("/action/stopContainer", JSON.stringify(getContainerAction(this)), null);
+//            });
+//
+//            $(".container-remove").click(function () {
+//                $.deleteRq("/action/removeContainer", JSON.stringify(getContainerAction(this)), null);
+//            });
+//
+//            $(".container-restart").click(function () {
+//                $.postRq("/action/restartContainer", JSON.stringify(getContainerAction(this)), null);
+//            });
     </script>
     <style>
         select {
@@ -126,7 +166,7 @@
         <th class="text-center">Networks</th>
         <th class="text-center">Actions</th>
     </tr>
-    <tr ng-repeat="container in runningContainers">
+    <tr ng-repeat="container in runningContainers" ng-controller="runningContainersController">
         <td>{{container.name}}</td>
         <td><a href="http://{{host.url}}:{{container.port}}"> http://{{host.url}}:{{container.port}}</a></td>
         <td>{{container.status}}</td>
@@ -135,10 +175,9 @@
             <p ng-repeat="network in container.networks">{{network}}</p>
         </td>
         <td>
-            <button class="container-restart" host-name="{{host.name}}" container-id="{{container.id}}">restart
-            </button>
-            <button class="container-stop" host-name="{{host.name}}" container-id="{{container.id}}">stop</button>
-            <button class="container-remove" host-name="{{host.name}}" container-id="{{container.id}}">remove</button>
+            <button ng-click="restartContainer()">restart</button>
+            <button ng-click="stopContainer()">stop</button>
+            <button ng-click="removeContainer()">remove</button>
         </td>
     </tr>
     </tbody>
@@ -154,7 +193,7 @@
         <th class="text-center">Networks</th>
         <th class="text-center">Actions</th>
     </tr>
-    <tr ng-repeat="container in stoppedContainers">
+    <tr ng-repeat="container in stoppedContainers" ng-controller="stoppedContainersController">
         <td>{{container.name}}</td>
         <td>{{container.status}}</td>
         <td>{{container.baseImage}}</td>
@@ -162,8 +201,8 @@
             <p ng-repeat="network in container.networks">{{network}}</p>
         </td>
         <td>
-            <button class="container-start" host-name="{{host.name}}" container-id="{{container.id}}">start</button>
-            <button class="container-remove" host-name="{{host.name}}" container-id="{{container.id}}">remove</button>
+            <button ng-click="startContainer()">start</button>
+            <button ng-click="removeContainer()">remove</button>
         </td>
     </tr>
     </tbody>
@@ -177,16 +216,16 @@
         <th class="text-center">Versions</th>
         <th class="text-center">Actions</th>
     </tr>
-    <tr ng-repeat="image in images">
+    <tr ng-repeat="image in images" ng-controller="selectedImageController">
         <td>{{image.name}}</td>
         <td>
-            <select>
+            <select ng-change="$scope.selectedImage = selectedImage" ng-model="selectedImage">
                 <option ng-repeat="tag in image.tags" value="{{image.name}}:{{tag}}">{{tag}}</option>
             </select>
         </td>
         <td>
             <button ng-click="createContainer()">create</button>
-            <button class="container-create-and-start">start</button>
+            <button ng-click="createAndStartContainer()">start</button>
         </td>
     </tr>
     </tbody>

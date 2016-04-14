@@ -2,6 +2,7 @@ package ru.tisov.denis.platform.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,10 +50,8 @@ public class DockerActionController {
         dockerManager.stopContainer(hostName, containerId);
     }
 
-    @RequestMapping(value = "/removeContainer", method = RequestMethod.DELETE)
-    public void removeContainer(@RequestBody ContainerActionDto containerActionDto) {
-        String hostName = containerActionDto.getHostName();
-        String containerId = containerActionDto.getContainerId();
+    @RequestMapping(value = "/removeContainer/{hostName}/{containerId}", method = RequestMethod.DELETE)
+    public void removeContainer(@PathVariable String hostName, @PathVariable String containerId) {
         dockerManager.removeContainer(hostName, containerId);
     }
 
