@@ -1,7 +1,9 @@
 package ru.tisov.denis.platform.da.impl;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.ContainerPort;
+import com.github.dockerjava.api.model.Frame;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
 import ru.tisov.denis.platform.domain.docker.Repository;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,7 +41,8 @@ public class DockerDaoImpl implements DockerDao {
 
         for (String imageName : imageNames) {
             ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/" + imageName + "/tags/list", ImageTags.class);
-            if(imageTags.getTags() != null && !imageTags.getTags().isEmpty()) result.add(new Image(imageName, imageTags.getTags()));
+            if (imageTags.getTags() != null && !imageTags.getTags().isEmpty())
+                result.add(new Image(imageName, imageTags.getTags()));
         }
 
         return result;
@@ -65,7 +70,7 @@ public class DockerDaoImpl implements DockerDao {
 
         private List<Container> runningContainers;
 
-        public ContainerMapper(){
+        public ContainerMapper() {
 
         }
 

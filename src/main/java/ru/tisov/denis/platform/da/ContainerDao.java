@@ -1,10 +1,8 @@
-package ru.tisov.denis.platform.manager;
+package ru.tisov.denis.platform.da;
 
-public interface DockerManager {
+public interface ContainerDao {
 
-    void createAndStartContainer(String hostName, String imageName);
-
-    void createContainer(String hostName, String imageName);
+    void createContainer(String hostName, String imageName, boolean startAfterCreating);
 
     void startContainer(String hostName, String containerId);
 
@@ -13,4 +11,7 @@ public interface DockerManager {
     void removeContainer(String hostName, String containerId);
 
     void restartContainer(String hostName, String containerId);
+
+    void loadLogs(String hostName, String containerId);
+
 }

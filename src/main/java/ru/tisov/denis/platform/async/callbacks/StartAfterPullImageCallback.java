@@ -7,13 +7,13 @@ import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.tisov.denis.platform.manager.impl.DockerManagerImpl;
+import ru.tisov.denis.platform.services.impl.ContainerServiceImpl;
 
 import java.io.Closeable;
 
 public class StartAfterPullImageCallback implements ResultCallback<PullResponseItem> {
 
-    private final Logger logger = LoggerFactory.getLogger(DockerManagerImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ContainerServiceImpl.class);
 
     private final String imageName;
     private final DockerClient dockerClient;
@@ -29,7 +29,7 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
 
     @Override
     public void onStart(Closeable closeable) {
-        logger.info("Starting load image");
+        logger.debug("Start loading image");
     }
 
     @Override
@@ -39,12 +39,12 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
 
     @Override
     public void onError(Throwable throwable) {
-        logger.info("Error while load image", throwable);
+        logger.error("Error while loading image", throwable);
     }
 
     @Override
     public void onComplete() {
-        logger.info("Image has loaded");
+        logger.info("Image has loaded " + imageName);
         CreateContainerResponse createContainerResponse = dockerClient.
                 createContainerCmd(imageName).
                 withPortBindings(portsBinding).exec();

@@ -14,4 +14,5 @@ public interface DockerDao {
     List<Container> getRunningContainers();
 
     List<Container> getStoppedContainers();
+
 }

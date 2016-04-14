@@ -36,5 +36,4 @@ public class DockerServiceImpl implements DockerService {
         return dockerDao.getStoppedContainers();
     }
 
-
 }

@@ -14,4 +14,5 @@ public interface DockerService {
     List<Container> getAllContainers();
 
     List<Container> getStoppedContainers();
+
 }

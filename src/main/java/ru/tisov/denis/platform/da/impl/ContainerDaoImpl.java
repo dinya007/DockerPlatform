@@ -1,4 +1,4 @@
-package ru.tisov.denis.platform.manager.impl;
+package ru.tisov.denis.platform.da.impl;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.ConflictException;
@@ -9,35 +9,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.tisov.denis.platform.async.callbacks.LogCallback;
 import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
+import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.manager.DockerManager;
 import ru.tisov.denis.platform.services.HostService;
 
 @Component
-public class DockerManagerImpl implements DockerManager {
+public class ContainerDaoImpl implements ContainerDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(DockerManagerImpl.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
 
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
 
     @Autowired
-    public DockerManagerImpl(DockerClientFactory dockerClientFactory, HostService hostService) {
+    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService) {
         this.dockerClientFactory = dockerClientFactory;
         this.hostService = hostService;
-    }
-
-    @Override
-    public void createAndStartContainer(String hostName, String imageName) {
-        createContainer(hostName, imageName, true);
-
-    }
-
-    @Override
-    public void createContainer(String hostName, String imageName) {
-        createContainer(hostName, imageName, false);
     }
 
     @Override
@@ -58,7 +49,6 @@ public class DockerManagerImpl implements DockerManager {
 
     @Override
     public void removeContainer(String hostName, String containerId) {
-        stopContainer(hostName, containerId);
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         dockerClient.removeContainerCmd(containerId).exec();
     }
@@ -69,7 +59,14 @@ public class DockerManagerImpl implements DockerManager {
         dockerClient.restartContainerCmd(containerId).exec();
     }
 
-    private void createContainer(String hostName, String imageName, boolean startAfterCreate) {
+    @Override
+    public void loadLogs(String hostName, String containerId) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
+        dockerClient.logContainerCmd(containerId).withStdErr(true).exec(new LogCallback());
+    }
+
+    @Override
+    public void createContainer(String hostName, String imageName, boolean startAfterCreate) {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 

@@ -1,3 +1,10 @@
+var getContainerInfo = function (scope) {
+    var containerAction = {};
+    containerAction.hostName = scope.host.name;
+    containerAction.containerId = scope.container.id;
+    return containerAction;
+};
+
 $.putRq = function(url, data, callback){
 
     if ( $.isFunction(data) ){
