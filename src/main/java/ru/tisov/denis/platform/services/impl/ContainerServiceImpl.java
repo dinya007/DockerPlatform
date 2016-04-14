@@ -3,12 +3,12 @@ package ru.tisov.denis.platform.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.tisov.denis.platform.controllers.dto.ContainerInfo;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.services.ContainerService;
 
-@Component
+@Service
 public class ContainerServiceImpl implements ContainerService {
 
     private static final Logger logger = LoggerFactory.getLogger(ContainerServiceImpl.class);

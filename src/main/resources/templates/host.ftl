@@ -61,7 +61,7 @@
             <button ng-click="restartContainer()">restart</button>
             <button ng-click="stopContainer()">stop</button>
             <button ng-click="removeContainer()">remove</button>
-            <button ng-click="getLogs()">logs</button>
+            <button ng-click="openLogs()">logs</button>
         </td>
     </tr>
     </tbody>
@@ -108,7 +108,8 @@
             </select>
         </td>
         <td>
-            <button ng-click="createContainer()">create</button>
+            <#--<button ng-click="createContainer()">create</button>-->
+            <button data-toggle="modal" data-target="#myModal">create</button>
             <button ng-click="createAndStartContainer()">start</button>
         </td>
     </tr>

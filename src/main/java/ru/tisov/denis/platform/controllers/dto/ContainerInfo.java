@@ -9,6 +9,14 @@ public class ContainerInfo {
     private String containerId;
     private String imageName;
 
+    public ContainerInfo() {
+    }
+
+    public ContainerInfo(String hostName, String containerId) {
+        this.hostName = hostName;
+        this.containerId = containerId;
+    }
+
     public String getHostName() {
         return hostName;
     }

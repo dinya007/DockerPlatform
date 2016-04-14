@@ -14,7 +14,11 @@ import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.docker.Log;
 import ru.tisov.denis.platform.services.HostService;
+
+import javax.annotation.Resource;
+import java.util.concurrent.BlockingQueue;
 
 @Component
 public class ContainerDaoImpl implements ContainerDao {
@@ -22,6 +26,8 @@ public class ContainerDaoImpl implements ContainerDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
 
+    @Resource(name="logQueue")
+    private BlockingQueue<Log> logQueue;
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
 
@@ -62,7 +68,7 @@ public class ContainerDaoImpl implements ContainerDao {
     @Override
     public void loadLogs(String hostName, String containerId) {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.logContainerCmd(containerId).withStdErr(true).exec(new LogCallback());
+        dockerClient.logContainerCmd(containerId).withStdErr(true).withStdOut(true).withTail(200).exec(new LogCallback(logQueue, hostName, containerId));
     }
 
     @Override

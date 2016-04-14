@@ -1,4 +1,4 @@
-app.controller('runningContainersController', ['$scope', '$http', function ($scope, $http) {
+app.controller('runningContainersController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     $scope.restartContainer = function () {
         $http.post("/action/restartContainer/", getContainerInfo($scope));
@@ -12,8 +12,8 @@ app.controller('runningContainersController', ['$scope', '$http', function ($sco
         $http.delete("/action/removeContainer/" + $scope.host.name + "/" + $scope.container.id);
     };
 
-    $scope.getLogs = function () {
-        $http.get("/hosts/logs/" + $scope.host.name + "/" + $scope.container.id);
+    $scope.openLogs = function () {
+        $window.open('/logs/?hostName=' + $scope.host.name + '&containerId=' + $scope.container.id, '_blank');
     };
 
 }]);
