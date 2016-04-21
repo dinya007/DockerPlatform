@@ -1,6 +1,7 @@
 package ru.tisov.denis.platform.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,9 +13,8 @@ public class Environment {
     @Column(name = "environment_id")
     private Long id;
     private String name;
-    //TODO change to LocalDateTime
-    private Date createdDate;
-    private Date modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "rel_environments_hosts",
@@ -41,19 +41,19 @@ public class Environment {
         this.name = name;
     }
 
-    public Date getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Date getModifiedDate() {
+    public LocalDateTime getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(Date modifiedDate) {
+    public void setModifiedDate(LocalDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 

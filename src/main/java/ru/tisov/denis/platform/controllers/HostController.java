@@ -37,15 +37,21 @@ public class HostController {
     }
 
     @ResponseBody
+    @RequestMapping("/all")
+    public List<Host> getAllHosts() {
+        return hostService.getAll();
+    }
+
+    @ResponseBody
     @RequestMapping("/{id}/hostInfo")
     public Host getHostInfo(@PathVariable Long id) {
         return hostService.getById(id);
     }
 
     @ResponseBody
-    @RequestMapping("/{id}/repositoryImages")
-    public List<Image> getRepositoryImages(@PathVariable Long id) {
-        Host host = hostService.getById(id);
+    @RequestMapping("/repositoryImages")
+    public List<Image> getRepositoryImages() {
+        Host host = hostService.getRegistryHost();
         DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
 
         List<Image> registryImages;
@@ -62,7 +68,7 @@ public class HostController {
     public List<Container> getRunningContainers(@PathVariable Long id) {
         Host host = hostService.getById(id);
         DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
-        return dockerService.getRunningContainers();
+        return dockerService.getRunningContainersWithoutRegistry();
     }
 
     @ResponseBody

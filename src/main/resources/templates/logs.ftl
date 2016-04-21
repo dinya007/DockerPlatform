@@ -5,7 +5,7 @@
 <head>
     <script src="/angular/angular.js"></script>
     <script src="/angular/angular-route.js"></script>
-    <script src="/js/logs.js"></script>
+    <script src="/js/app/logs.js"></script>
 </head>
 <body ng-controller="logController">
 

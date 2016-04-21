@@ -11,6 +11,8 @@ public interface DockerService {
 
     List<Container> getRunningContainers();
 
+    List<Container> getRunningContainersWithoutRegistry();
+
     List<Container> getAllContainers();
 
     List<Container> getStoppedContainers();

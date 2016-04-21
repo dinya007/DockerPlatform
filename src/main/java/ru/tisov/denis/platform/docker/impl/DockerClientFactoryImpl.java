@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-@PropertySource("docker.properties")
+@PropertySource("classpath:docker.properties")
 public class DockerClientFactoryImpl implements DockerClientFactory {
 
     @Autowired

@@ -5,9 +5,9 @@ var getContainerInfo = function (scope) {
     return containerAction;
 };
 
-$.putRq = function(url, data, callback){
+$.putRq = function (url, data, callback) {
 
-    if ( $.isFunction(data) ){
+    if ($.isFunction(data)) {
         type = type || callback,
             callback = data,
             data = {}
@@ -22,9 +22,9 @@ $.putRq = function(url, data, callback){
     });
 }
 
-$.postRq = function(url, data, callback){
+$.postRq = function (url, data, callback) {
 
-    if ( $.isFunction(data) ){
+    if ($.isFunction(data)) {
         type = type || callback,
             callback = data,
             data = {}
@@ -39,9 +39,9 @@ $.postRq = function(url, data, callback){
     });
 }
 
-$.deleteRq = function(url, data, callback){
+$.deleteRq = function (url, data, callback) {
 
-    if ( $.isFunction(data) ){
+    if ($.isFunction(data)) {
         type = type || callback,
             callback = data,
             data = {}
