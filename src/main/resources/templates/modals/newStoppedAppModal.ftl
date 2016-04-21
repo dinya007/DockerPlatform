@@ -15,6 +15,7 @@
                         <th class="text-center">Versions</th>
                         <th class="text-center">Actions</th>
                     </tr>
+                    <#include "appCreationInfoModal.ftl" >
                     <tr ng-repeat="image in images" ng-controller="selectedImageController">
                         <td>{{image.name}}</td>
                         <td>
@@ -24,8 +25,10 @@
                             </select>
                         </td>
                         <td>
-                            <button ng-click="createContainer()" data-dismiss="modal">create</button>
+                            <button data-toggle="modal" data-target="#newAppCreationInfoModal"
+                                    ng-click="setSelectedImage(selectedImage);">Create</button>
                         </td>
+
                     </tr>
                     </tbody>
                 </table>

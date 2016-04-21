@@ -2,8 +2,6 @@ package ru.tisov.denis.platform.da;
 
 public interface ContainerDao {
 
-    void createContainer(String hostName, String imageName, boolean startAfterCreating);
-
     void startContainer(String hostName, String containerId);
 
     void stopContainer(String hostName, String containerId);
@@ -14,4 +12,5 @@ public interface ContainerDao {
 
     void loadLogs(String hostName, String containerId);
 
+    void createContainer(String hostName, String imageName, String appName, Integer port, boolean startAfterCreate);
 }

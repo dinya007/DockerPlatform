@@ -22,12 +22,12 @@ public class ContainerServiceImpl implements ContainerService {
 
     @Override
     public void createAndStartContainer(ContainerInfo containerInfo) {
-        containerDao.createContainer(containerInfo.getHostName(), containerInfo.getImageName(), true);
+        containerDao.createContainer(containerInfo.getHostName(), containerInfo.getImageName(), containerInfo.getAppName(), containerInfo.getPort(), true);
     }
 
     @Override
     public void createContainer(ContainerInfo containerInfo) {
-        containerDao.createContainer(containerInfo.getHostName(), containerInfo.getImageName(), false);
+        containerDao.createContainer(containerInfo.getHostName(), containerInfo.getImageName(), containerInfo.getAppName(), containerInfo.getPort(), false);
     }
 
     @Override

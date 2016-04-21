@@ -8,6 +8,8 @@ public class ContainerInfo {
     private String hostName;
     private String containerId;
     private String imageName;
+    private String appName;
+    private Integer port;
 
     public ContainerInfo() {
     }
@@ -39,6 +41,22 @@ public class ContainerInfo {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     @Override

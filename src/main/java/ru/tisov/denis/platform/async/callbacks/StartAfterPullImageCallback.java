@@ -2,6 +2,7 @@ package ru.tisov.denis.platform.async.callbacks;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
@@ -18,10 +19,12 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     private final String imageName;
     private final DockerClient dockerClient;
     private final Ports portsBinding;
+    private final String appName;
     private final boolean startAfterCreate;
 
-    public StartAfterPullImageCallback(String imageName, DockerClient dockerClient, Ports portsBinding, boolean startAfterCreate) {
+    public StartAfterPullImageCallback(String imageName, String appName, DockerClient dockerClient, Ports portsBinding, boolean startAfterCreate) {
         this.imageName = imageName;
+        this.appName = appName;
         this.dockerClient = dockerClient;
         this.portsBinding = portsBinding;
         this.startAfterCreate = startAfterCreate;
@@ -45,9 +48,14 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     @Override
     public void onComplete() {
         logger.info("Image has loaded " + imageName);
-        CreateContainerResponse createContainerResponse = dockerClient.
-                createContainerCmd(imageName).
-                withPortBindings(portsBinding).exec();
+
+        CreateContainerCmd containerCmd = dockerClient.
+                createContainerCmd(imageName).withName(appName);
+
+        if (portsBinding != null) containerCmd = containerCmd.withPortBindings(portsBinding);
+
+
+        CreateContainerResponse createContainerResponse = containerCmd.exec();
         if (startAfterCreate) dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
     }
 

@@ -72,13 +72,16 @@ public class ContainerDaoImpl implements ContainerDao {
     }
 
     @Override
-    public void createContainer(String hostName, String imageName, boolean startAfterCreate) {
+    public void createContainer(String hostName, String imageName, String appName, Integer port, boolean startAfterCreate) {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        ExposedPort exposedPort = ExposedPort.tcp(8080);
-        Ports portsBinding = new Ports();
-        portsBinding.bind(exposedPort, Ports.binding(8081));
+        Ports portsBinding = null;
+        if (port != null) {
+            ExposedPort exposedPort = ExposedPort.tcp(8080);
+            portsBinding = new Ports();
+            portsBinding.bind(exposedPort, Ports.binding(port));
+        }
 
         String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
         if (registryIp.equals(currentHost.getUrl())) registryIp = "127.0.0.1";
@@ -90,7 +93,7 @@ public class ContainerDaoImpl implements ContainerDao {
         } catch (ConflictException ex) {
             logger.info("Unable to delete image", ex);
         } finally {
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, dockerClient, portsBinding, startAfterCreate));
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, appName, dockerClient, portsBinding, startAfterCreate));
         }
     }
 

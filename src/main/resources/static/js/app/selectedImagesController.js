@@ -4,19 +4,25 @@ app.controller('selectedImageController', ['$scope', '$http', function ($scope, 
 
         containerCreationDto.hostName = $scope.selectedHost.name;
         containerCreationDto.imageName = $scope.selectedImage;
-        $http.put("/action/createContainer", containerCreationDto);
+        containerCreationDto.appName = $scope.selectedAppName;
+        containerCreationDto.port = $scope.selectedPort;
 
+        $http.put("/action/createContainer", containerCreationDto);
+        
         $scope.updateStoppedContainers($scope.selectedHost.id);
     };
 
     $scope.createAndStartContainer = function () {
-        var createContainerAction = {};
-        createContainerAction.hostName = $scope.selectedHost.name;
-        createContainerAction.imageName = $scope.selectedImage;
+        var containerCreationDto = {};
+        containerCreationDto.hostName = $scope.selectedHost.name;
+        containerCreationDto.imageName = $scope.selectedImage;
+        containerCreationDto.appName = $scope.selectedAppName;
+        containerCreationDto.port = $scope.selectedPort;
 
-        $http.put("/action/createStartContainer", createContainerAction);
+        $http.put("/action/createStartContainer", containerCreationDto);
 
         $scope.updateRunningContainers($scope.selectedHost.id);
     };
 
-}]);
+}])
+;

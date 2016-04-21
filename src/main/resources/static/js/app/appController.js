@@ -4,6 +4,7 @@ app.controller('mainCtrl', ['$scope', '$http', '$window', '$timeout', function (
     $scope.runningContainers = [];
     $scope.stoppedContainers = [];
     $scope.selectedHost = {};
+    $scope.selectedImage = {};
 
     $http.get("/hosts/all").then(function (data) {
         $scope.hosts = data.data;
@@ -43,6 +44,10 @@ app.controller('mainCtrl', ['$scope', '$http', '$window', '$timeout', function (
 
     $scope.setSelectedHost = function (host) {
         $scope.selectedHost = host;
+    };
+
+    $scope.setSelectedImage = function (image) {
+        $scope.selectedImage = image;
     };
 
     $scope.updateStoppedContainers = function (hostId) {
