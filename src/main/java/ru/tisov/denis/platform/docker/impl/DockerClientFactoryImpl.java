@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.service.HostService;
 
 import java.util.Map;
 import java.util.Optional;

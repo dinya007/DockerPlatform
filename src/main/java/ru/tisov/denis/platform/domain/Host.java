@@ -4,8 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "hosts")
@@ -21,9 +21,6 @@ public class Host {
     private boolean isRegistry;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    public Host() {
-    }
 
     public Long getId() {
         return id;

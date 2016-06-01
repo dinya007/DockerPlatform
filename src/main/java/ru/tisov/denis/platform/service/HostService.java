@@ -1,4 +1,4 @@
-package ru.tisov.denis.platform.services;
+package ru.tisov.denis.platform.service;
 
 import ru.tisov.denis.platform.domain.Host;
 

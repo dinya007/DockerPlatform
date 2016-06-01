@@ -1,10 +1,13 @@
-package ru.tisov.denis.platform.controllers;
+package ru.tisov.denis.platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import ru.tisov.denis.platform.controllers.dto.ContainerInfo;
-import ru.tisov.denis.platform.services.LogService;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import ru.tisov.denis.platform.domain.docker.Container;
+import ru.tisov.denis.platform.service.LogService;
 
 import java.util.List;
 
@@ -27,8 +30,10 @@ public class LogController {
     @ResponseBody
     @RequestMapping(value = "/{hostName}/{containerId}", method = RequestMethod.GET)
     public List<String> getLogs(@PathVariable String hostName, @PathVariable String containerId) {
-        ContainerInfo containerInfo = new ContainerInfo(hostName, containerId);
-        return logService.getLogs(containerInfo);
+        Container container = new Container();
+        container.setId(containerId);
+        container.setHostName(hostName);
+        return logService.getLogs(container);
     }
 
 }

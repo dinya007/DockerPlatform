@@ -1,11 +1,11 @@
-package ru.tisov.denis.platform.services.impl;
+package ru.tisov.denis.platform.service.impl;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tisov.denis.platform.da.HostDao;
 import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.service.HostService;
 
 import java.util.List;
 

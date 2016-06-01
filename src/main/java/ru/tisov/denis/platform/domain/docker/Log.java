@@ -1,25 +1,23 @@
 package ru.tisov.denis.platform.domain.docker;
 
-import ru.tisov.denis.platform.controllers.dto.ContainerInfo;
-
 import java.util.List;
 
 public class Log {
 
-    private ContainerInfo containerInfo;
+    private Container container;
     private List<String> logs;
 
-    public Log(ContainerInfo containerInfo, List<String> logs) {
-        this.containerInfo = containerInfo;
+    public Log(Container container, List<String> logs) {
+        this.container = container;
         this.logs = logs;
     }
 
-    public ContainerInfo getContainerInfo() {
-        return containerInfo;
+    public Container getContainer() {
+        return container;
     }
 
-    public void setContainerInfo(ContainerInfo containerInfo) {
-        this.containerInfo = containerInfo;
+    public void setContainer(Container container) {
+        this.container = container;
     }
 
     public List<String> getLogs() {

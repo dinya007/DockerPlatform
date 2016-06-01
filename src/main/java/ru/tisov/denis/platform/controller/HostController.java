@@ -1,10 +1,9 @@
-package ru.tisov.denis.platform.controllers;
+package ru.tisov.denis.platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -12,8 +11,8 @@ import ru.tisov.denis.platform.docker.DockerServiceFactory;
 import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.domain.docker.Container;
-import ru.tisov.denis.platform.services.DockerService;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.service.DockerService;
+import ru.tisov.denis.platform.service.HostService;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +32,7 @@ public class HostController {
 
     @RequestMapping("/{id}")
     public String getAllEnvironments(@PathVariable Long id) {
-        return "host";
+        return "apps";
     }
 
     @ResponseBody

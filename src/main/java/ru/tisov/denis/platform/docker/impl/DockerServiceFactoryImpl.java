@@ -2,11 +2,10 @@ package ru.tisov.denis.platform.docker.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.docker.DockerDaoFactory;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
-import ru.tisov.denis.platform.services.DockerService;
-import ru.tisov.denis.platform.services.impl.DockerServiceImpl;
+import ru.tisov.denis.platform.service.DockerService;
+import ru.tisov.denis.platform.service.impl.DockerServiceImpl;
 
 @Component
 public class DockerServiceFactoryImpl implements DockerServiceFactory {

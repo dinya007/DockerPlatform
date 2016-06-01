@@ -1,12 +1,12 @@
-package ru.tisov.denis.platform.services.impl;
+package ru.tisov.denis.platform.service.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.tisov.denis.platform.controllers.dto.ContainerInfo;
 import ru.tisov.denis.platform.da.ContainerDao;
-import ru.tisov.denis.platform.services.LogService;
+import ru.tisov.denis.platform.domain.docker.Container;
+import ru.tisov.denis.platform.service.LogService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LogServiceImpl implements LogService {
 
-    private final Cache<ContainerInfo, List<String>> logs;
+    private final Cache<Container, List<String>> logs;
     private final ContainerDao containerDao;
 
     @Autowired
@@ -25,15 +25,20 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public List<String> getLogs(ContainerInfo containerInfo) {
-        containerDao.loadLogs(containerInfo.getHostName(), containerInfo.getContainerId());
-        return logs.getIfPresent(containerInfo);
+    public List<String> getLogs(Container container) {
+        containerDao.loadLogs(container);
+        return logs.getIfPresent(container);
     }
 
     @Override
-    public List<String> addLogs(ContainerInfo containerInfo, List<String> newLogs) {
-        logs.put(containerInfo, newLogs);
+    public List<String> addLogs(Container container, List<String> newLogs) {
+        logs.put(container, newLogs);
         return newLogs;
+    }
+
+    @Override
+    public void loadLogs(Container container) {
+        containerDao.loadLogs(container);
     }
 
 }

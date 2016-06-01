@@ -9,7 +9,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="name">App name:</label>
-                    <input type="text" class="form-control" id="appName" ng-model="selectedAppName"/>
+                    <input type="text" class="form-control" id="name" ng-model="selectedAppName"/>
                 </div>
                 <div class="form-group">
                     <label for="port">Port:</label>
@@ -18,7 +18,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="createContainer()">Ok
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="setSelectedAppName(selectedAppName); createContainer()">Ok
                 </button>
             </div>
         </div>

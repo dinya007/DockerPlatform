@@ -2,7 +2,6 @@ package ru.tisov.denis.platform.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,9 +20,6 @@ public class Environment {
             joinColumns = {@JoinColumn(name = "environment_id")},
             inverseJoinColumns = {@JoinColumn(name = "host_id")})
     private List<Host> hosts;
-
-    public Environment() {
-    }
 
     public Long getId() {
         return id;

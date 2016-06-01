@@ -14,8 +14,11 @@ import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.enums.Ip;
+import ru.tisov.denis.platform.enums.Port;
+import ru.tisov.denis.platform.service.HostService;
 
 import javax.annotation.Resource;
 import java.util.concurrent.BlockingQueue;
@@ -23,10 +26,9 @@ import java.util.concurrent.BlockingQueue;
 @Component
 public class ContainerDaoImpl implements ContainerDao {
 
-
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
 
-    @Resource(name="logQueue")
+    @Resource(name = "logQueue")
     private BlockingQueue<Log> logQueue;
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
@@ -38,63 +40,73 @@ public class ContainerDaoImpl implements ContainerDao {
     }
 
     @Override
-    public void startContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.startContainerCmd(containerId).exec();
+    public void start(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.startContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void stopContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
+    public void stop(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
         try {
-            dockerClient.stopContainerCmd(containerId).exec();
+            dockerClient.stopContainerCmd(container.getId()).exec();
         } catch (NotModifiedException e) {
             logger.info("Container already stopped.", e);
         }
     }
 
     @Override
-    public void removeContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.removeContainerCmd(containerId).exec();
+    public void remove(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.removeContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void restartContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.restartContainerCmd(containerId).exec();
+    public void restart(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.restartContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void loadLogs(String hostName, String containerId) {
+    public void loadLogs(Container container) {
+        String hostName = container.getHostName();
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
+        String containerId = container.getId();
         dockerClient.logContainerCmd(containerId).withStdErr(true).withStdOut(true).withTail(200).exec(new LogCallback(logQueue, hostName, containerId));
     }
 
     @Override
-    public void createContainer(String hostName, String imageName, String appName, Integer port, boolean startAfterCreate) {
+    public void create(Container container, boolean startAfterCreate) {
+        String hostName = container.getHostName();
+        Integer port = container.getPort();
+
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        Ports portsBinding = null;
-        if (port != null) {
-            ExposedPort exposedPort = ExposedPort.tcp(8080);
-            portsBinding = new Ports();
-            portsBinding.bind(exposedPort, Ports.binding(port));
-        }
+        Ports portsBinding = bindPorts(port);
 
         String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
-        if (registryIp.equals(currentHost.getUrl())) registryIp = "127.0.0.1";
+        if (registryIp.equals(currentHost.getUrl())) registryIp = Ip.LOCAL_HOST.getIp();
 
-        String fullImageName = registryIp + ":5000" + "/" + imageName;
+        String fullImageName = registryIp + ":" + Port.REGISTRY_PORT.getPort() + "/" + container.getImageName();
 
         try {
             dockerClient.listImagesCmd().exec().forEach(image -> dockerClient.removeImageCmd(image.getId()).withForce(true).exec());
         } catch (ConflictException ex) {
             logger.info("Unable to delete image", ex);
         } finally {
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, appName, dockerClient, portsBinding, startAfterCreate));
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, container.getName(), dockerClient, portsBinding, startAfterCreate));
         }
+    }
+
+    private Ports bindPorts(Integer port) {
+        Ports portsBinding = null;
+        if (port != null) {
+            ExposedPort exposedPort = ExposedPort.tcp(Port.DEFAULT_PORT.getPort());
+            portsBinding = new Ports();
+            portsBinding.bind(exposedPort, Ports.binding(port));
+        }
+        return portsBinding;
     }
 
 }

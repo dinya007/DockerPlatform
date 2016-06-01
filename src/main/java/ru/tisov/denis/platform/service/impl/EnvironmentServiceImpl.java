@@ -1,11 +1,11 @@
-package ru.tisov.denis.platform.services.impl;
+package ru.tisov.denis.platform.service.impl;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.domain.Environment;
-import ru.tisov.denis.platform.services.EnvironmentService;
+import ru.tisov.denis.platform.service.EnvironmentService;
 
 import java.util.List;
 

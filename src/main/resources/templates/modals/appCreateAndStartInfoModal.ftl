@@ -9,7 +9,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="name">App name:</label>
-                    <input type="text" class="form-control" id="appName" ng-model="selectedAppName"/>
+                    <input type="text" class="form-control" id="name" ng-model="selectedAppName"/>
                 </div>
                 <div class="form-group">
                     <label for="port">Port:</label>

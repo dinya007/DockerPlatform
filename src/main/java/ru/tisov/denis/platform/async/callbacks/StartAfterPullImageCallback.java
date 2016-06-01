@@ -8,7 +8,7 @@ import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.tisov.denis.platform.services.impl.ContainerServiceImpl;
+import ru.tisov.denis.platform.service.impl.ContainerServiceImpl;
 
 import java.io.Closeable;
 

@@ -4,7 +4,7 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.tisov.denis.platform.controllers.dto.ContainerInfo;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
 
 import java.io.Closeable;
@@ -19,14 +19,14 @@ public class LogCallback implements ResultCallback<Frame> {
     private static final Logger logger = LoggerFactory.getLogger(LogCallback.class);
     private final BlockingQueue<Log> logQueue;
     private final List<String> logs = new ArrayList<>();
-    private final ContainerInfo containerInfo;
+    private final Container containerInfo;
 
     public LogCallback(BlockingQueue<Log> logQueue, String hostName, String containerId) {
         this.logQueue = logQueue;
 
-        containerInfo = new ContainerInfo();
+        containerInfo = new Container();
         containerInfo.setHostName(hostName);
-        containerInfo.setContainerId(containerId);
+        containerInfo.setId(containerId);
     }
 
     @Override

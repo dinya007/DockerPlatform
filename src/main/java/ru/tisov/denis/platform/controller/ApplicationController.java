@@ -1,4 +1,4 @@
-package ru.tisov.denis.platform.controllers;
+package ru.tisov.denis.platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.tisov.denis.platform.domain.Application;
 import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.services.ApplicationService;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.service.ApplicationService;
+import ru.tisov.denis.platform.service.HostService;
 
 import java.util.List;
 
