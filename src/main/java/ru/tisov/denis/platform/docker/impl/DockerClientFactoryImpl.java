@@ -2,8 +2,11 @@ package ru.tisov.denis.platform.docker.impl;
 
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.DockerCmdExecFactory;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,12 +39,15 @@ public class DockerClientFactoryImpl implements DockerClientFactory {
         }
 
         Host host = hostService.getByName(hostName);
-        DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
+        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://" + host.getUrl() + ":2376")
-                .withDockerCertPath(host.getHostPath())
+                .withDockerCertPath("/Users/denis/.docker/machine/machines/default")
+                .withApiVersion("1.12")
                 .withRegistryUrl(registryUrl)
                 .build();
-        DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+
+        DockerClient dockerClient = DockerClientBuilder.getInstance(config)
+                .build();
 
         hosts.put(hostName, dockerClient);
         return dockerClient;

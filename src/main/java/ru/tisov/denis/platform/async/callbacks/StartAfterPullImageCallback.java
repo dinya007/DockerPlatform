@@ -8,6 +8,7 @@ import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.service.impl.ContainerServiceImpl;
 
 import java.io.Closeable;
@@ -16,18 +17,15 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
 
     private final Logger logger = LoggerFactory.getLogger(ContainerServiceImpl.class);
 
-    private final String imageName;
     private final DockerClient dockerClient;
-    private final Ports portsBinding;
-    private final String appName;
     private final boolean startAfterCreate;
+    private final StartContainerParams params;
 
-    public StartAfterPullImageCallback(String imageName, String appName, DockerClient dockerClient, Ports portsBinding, boolean startAfterCreate) {
-        this.imageName = imageName;
-        this.appName = appName;
+
+    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params) {
         this.dockerClient = dockerClient;
-        this.portsBinding = portsBinding;
         this.startAfterCreate = startAfterCreate;
+        this.params = params;
     }
 
     @Override
@@ -47,15 +45,16 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
 
     @Override
     public void onComplete() {
-        logger.info("Image has loaded " + imageName);
+        logger.info("Image has loaded " + params.getImageName());
 
         CreateContainerCmd containerCmd = dockerClient.
-                createContainerCmd(imageName).withName(appName);
+                createContainerCmd(params.getImageName()).withName(params.getAppName());
 
-        if (portsBinding != null) containerCmd = containerCmd.withPortBindings(portsBinding);
+        if (params.getPortsBinding() != null) containerCmd = containerCmd.withPortBindings(params.getPortsBinding());
 
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();
+
         if (startAfterCreate) dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
     }
 

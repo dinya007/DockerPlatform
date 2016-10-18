@@ -4,7 +4,7 @@ app.controller('selectedImageController', ['$scope', '$http', function ($scope, 
 
         containerCreationDto.hostName = $scope.selectedHost.name;
         containerCreationDto.imageName = $scope.selectedImage;
-        containerCreationDto.appName = $scope.selectedAppName;
+        containerCreationDto.name = $scope.selectedAppName;
         containerCreationDto.port = $scope.selectedPort;
 
         $http.put("/action/createContainer", containerCreationDto);
@@ -16,7 +16,7 @@ app.controller('selectedImageController', ['$scope', '$http', function ($scope, 
         var containerCreationDto = {};
         containerCreationDto.hostName = $scope.selectedHost.name;
         containerCreationDto.imageName = $scope.selectedImage;
-        containerCreationDto.appName = $scope.selectedAppName;
+        containerCreationDto.name = $scope.selectedAppName;
         containerCreationDto.port = $scope.selectedPort;
 
         $http.put("/action/createStartContainer", containerCreationDto);

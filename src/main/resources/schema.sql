@@ -3,6 +3,15 @@ DROP TABLE IF EXISTS environments;
 DROP TABLE IF EXISTS running_applications;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS hosts;
+DROP TABLE IF EXISTS networks;
+
+CREATE TABLE networks
+(
+  network_id INTEGER IDENTITY PRIMARY KEY NOT NULL,
+  name           VARCHAR(100),
+  created_date   TIMESTAMP,
+  modified_date  TIMESTAMP,
+);
 
 CREATE TABLE environments
 (

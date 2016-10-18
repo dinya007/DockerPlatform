@@ -50,10 +50,6 @@ app.controller('mainCtrl', ['$scope', '$http', '$window', '$timeout', function (
         $scope.selectedImage = image;
     };
 
-    $scope.setSelectedAppName = function (name) {
-        $scope.selectedAppName = name;
-    };
-
     $scope.updateStoppedContainers = function (hostId) {
         $timeout(function () {
             getStoppedContainers(hostId);

@@ -1,7 +1,9 @@
 var getContainerInfo = function (scope) {
     var containerAction = {};
     containerAction.hostName = scope.host.name;
-    containerAction.containerId = scope.container.id;
+    containerAction.id = scope.container.id;
+    containerAction.name = scope.selectedAppName;
+    containerAction.port = scope.selectedPort;
     return containerAction;
 };
 

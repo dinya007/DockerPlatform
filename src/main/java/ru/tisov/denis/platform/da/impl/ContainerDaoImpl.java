@@ -14,6 +14,7 @@ import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
 import ru.tisov.denis.platform.enums.Ip;
@@ -27,11 +28,10 @@ import java.util.concurrent.BlockingQueue;
 public class ContainerDaoImpl implements ContainerDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
-
-    @Resource(name = "logQueue")
-    private BlockingQueue<Log> logQueue;
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
+    @Resource(name = "logQueue")
+    private BlockingQueue<Log> logQueue;
 
     @Autowired
     public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService) {
@@ -83,7 +83,9 @@ public class ContainerDaoImpl implements ContainerDao {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        Ports portsBinding = bindPorts(port);
+        Ports portsBinding = null;
+
+        if (port != null) portsBinding = bindPorts(port);
 
         String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
         if (registryIp.equals(currentHost.getUrl())) registryIp = Ip.LOCAL_HOST.getIp();
@@ -95,17 +97,16 @@ public class ContainerDaoImpl implements ContainerDao {
         } catch (ConflictException ex) {
             logger.info("Unable to delete image", ex);
         } finally {
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, container.getName(), dockerClient, portsBinding, startAfterCreate));
+            StartContainerParams params = new StartContainerParams(fullImageName, container.getName());
+            params.setPortsBinding(portsBinding);
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params));
         }
     }
 
     private Ports bindPorts(Integer port) {
-        Ports portsBinding = null;
-        if (port != null) {
-            ExposedPort exposedPort = ExposedPort.tcp(Port.DEFAULT_PORT.getPort());
-            portsBinding = new Ports();
-            portsBinding.bind(exposedPort, Ports.binding(port));
-        }
+        Ports portsBinding = new Ports();
+        ExposedPort exposedPort = ExposedPort.tcp(Port.DEFAULT_PORT.getPort());
+        portsBinding.bind(exposedPort, Ports.Binding.bindPortSpec(port.toString()));
         return portsBinding;
     }
 
