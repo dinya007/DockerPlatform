@@ -4,7 +4,6 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,8 @@ import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
-import ru.tisov.denis.platform.enums.Ip;
-import ru.tisov.denis.platform.enums.Port;
+import ru.tisov.denis.platform.enums.Hosts;
+import ru.tisov.denis.platform.enums.Ports;
 import ru.tisov.denis.platform.service.HostService;
 
 import javax.annotation.Resource;
@@ -83,14 +82,14 @@ public class ContainerDaoImpl implements ContainerDao {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        Ports portsBinding = null;
+        com.github.dockerjava.api.model.Ports portsBinding = null;
 
         if (port != null) portsBinding = bindPorts(port);
 
         String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
-        if (registryIp.equals(currentHost.getUrl())) registryIp = Ip.LOCAL_HOST.getIp();
+        if (registryIp.equals(currentHost.getUrl())) registryIp = Hosts.LOCAL_HOST.getIp();
 
-        String fullImageName = registryIp + ":" + Port.REGISTRY_PORT.getPort() + "/" + container.getImageName();
+        String fullImageName = registryIp + ":" + Ports.REGISTRY_PORT.getPort() + "/" + container.getImageName();
 
         try {
             dockerClient.listImagesCmd().exec().forEach(image -> dockerClient.removeImageCmd(image.getId()).withForce(true).exec());
@@ -103,10 +102,10 @@ public class ContainerDaoImpl implements ContainerDao {
         }
     }
 
-    private Ports bindPorts(Integer port) {
-        Ports portsBinding = new Ports();
-        ExposedPort exposedPort = ExposedPort.tcp(Port.DEFAULT_PORT.getPort());
-        portsBinding.bind(exposedPort, Ports.Binding.bindPortSpec(port.toString()));
+    private com.github.dockerjava.api.model.Ports bindPorts(Integer port) {
+        com.github.dockerjava.api.model.Ports portsBinding = new com.github.dockerjava.api.model.Ports();
+        ExposedPort exposedPort = ExposedPort.tcp(Ports.DEFAULT_PORT.getPort());
+        portsBinding.bind(exposedPort, new com.github.dockerjava.api.model.Ports.Binding(null, port.toString()));
         return portsBinding;
     }
 

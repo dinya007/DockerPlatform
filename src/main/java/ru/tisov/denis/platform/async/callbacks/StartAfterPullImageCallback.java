@@ -4,6 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
 import org.slf4j.Logger;
@@ -50,7 +51,10 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
         CreateContainerCmd containerCmd = dockerClient.
                 createContainerCmd(params.getImageName()).withName(params.getAppName());
 
-        if (params.getPortsBinding() != null) containerCmd = containerCmd.withPortBindings(params.getPortsBinding());
+        if (params.getPortsBinding() != null)
+            containerCmd = containerCmd
+                    .withExposedPorts(new ExposedPort(ru.tisov.denis.platform.enums.Ports.DEFAULT_PORT.getPort()))
+                    .withPortBindings(params.getPortsBinding());
 
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();

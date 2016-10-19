@@ -23,13 +23,17 @@ import java.util.Optional;
 @PropertySource("classpath:docker.properties")
 public class DockerClientFactoryImpl implements DockerClientFactory {
 
-    @Autowired
-    private HostService hostService;
+    private final HostService hostService;
 
     @Value("${registry.url}")
     private String registryUrl;
 
     private Map<String, DockerClient> hosts = Maps.newHashMap();
+
+    @Autowired
+    public DockerClientFactoryImpl(HostService hostService) {
+        this.hostService = hostService;
+    }
 
     public DockerClient getDockerClient(String hostName) {
 

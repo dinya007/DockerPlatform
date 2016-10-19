@@ -30,7 +30,10 @@ public class DockerServiceImpl implements DockerService {
 
     @Override
     public List<Container> getRunningContainersWithoutRegistry() {
-        return getRunningContainers().stream().filter(container -> !container.getPort().equals(registryPort)).collect(Collectors.toList());
+        return getRunningContainers().stream().filter(container -> {
+            Integer port = container.getPort();
+            return port == null || !port.equals(registryPort);
+        }).collect(Collectors.toList());
     }
 
     @Override
