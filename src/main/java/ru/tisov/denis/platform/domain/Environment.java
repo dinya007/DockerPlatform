@@ -21,6 +21,12 @@ public class Environment {
             inverseJoinColumns = {@JoinColumn(name = "host_id")})
     private List<Host> hosts;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "rel_environments_networks",
+            joinColumns = {@JoinColumn(name = "environment_id")},
+            inverseJoinColumns = {@JoinColumn(name = "network_id")})
+    private List<Network> networks;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +65,13 @@ public class Environment {
 
     public void setHosts(List<Host> hosts) {
         this.hosts = hosts;
+    }
+
+    public List<Network> getNetworks() {
+        return networks;
+    }
+
+    public void setNetworks(List<Network> networks) {
+        this.networks = networks;
     }
 }

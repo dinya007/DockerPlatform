@@ -6,7 +6,7 @@ app.controller('mainCtrl', ['$scope', '$http', '$window', '$timeout', function (
     $scope.selectedHost = {};
     $scope.selectedImage = {};
 
-    $http.get("/hosts/all").then(function (data) {
+    $http.get("/hosts/all/").then(function (data) {
         $scope.hosts = data.data;
 
         for (var i = 0; i < $scope.hosts.length; i++) {

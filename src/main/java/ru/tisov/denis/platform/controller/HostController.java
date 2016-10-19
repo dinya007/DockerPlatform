@@ -12,6 +12,7 @@ import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.service.DockerService;
+import ru.tisov.denis.platform.service.EnvironmentService;
 import ru.tisov.denis.platform.service.HostService;
 
 import java.util.Collections;
@@ -23,11 +24,13 @@ public class HostController {
 
     private final HostService hostService;
     private final DockerServiceFactory dockerServiceFactory;
+    private final EnvironmentService environmentService;
 
     @Autowired
-    public HostController(HostService hostService, DockerServiceFactory dockerServiceFactory) {
+    public HostController(HostService hostService, DockerServiceFactory dockerServiceFactory, EnvironmentService environmentService) {
         this.hostService = hostService;
         this.dockerServiceFactory = dockerServiceFactory;
+        this.environmentService = environmentService;
     }
 
     @RequestMapping("/{id}")
@@ -39,6 +42,12 @@ public class HostController {
     @RequestMapping("/all")
     public List<Host> getAllHosts() {
         return hostService.getAll();
+    }
+
+    @ResponseBody
+    @RequestMapping("/all/{environmentId}")
+    public List<Host> getHostByEnvironmentId(@PathVariable Long environmentId) {
+        return environmentService.getById(environmentId).getHosts();
     }
 
     @ResponseBody
