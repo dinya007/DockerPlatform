@@ -26,7 +26,8 @@ public class EnvironmentController {
 
     @RequestMapping("/env/{id}")
     public String getEnvironment(@PathVariable Long id, Model model) {
-        model.addAttribute("environment", environmentService.getById(id));
+        model.addAttribute("hosts", environmentService.getById(id).getHosts());
+        model.addAttribute("selectedEnvironment", id);
         return "environment";
     }
 

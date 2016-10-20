@@ -5,6 +5,7 @@ docker-machine create \
  --swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
  --engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
  --engine-opt="cluster-advertise=eth1:2376" \
+ --engine-insecure-registry 192.168.99.100:5000 \
  master-node
 
 docker-machine create -d virtualbox \
@@ -12,6 +13,7 @@ docker-machine create -d virtualbox \
      --swarm-discovery="consul://$(docker-machine ip mh-keystore):8500" \
      --engine-opt="cluster-store=consul://$(docker-machine ip mh-keystore):8500" \
      --engine-opt="cluster-advertise=eth1:2376" \
+     --engine-insecure-registry 192.168.99.100:5000 \
    slave-node-1
 
 eval $(docker-machine env --swarm master-node)

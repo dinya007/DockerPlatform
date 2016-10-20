@@ -31,12 +31,12 @@ public class DockerDaoImpl implements DockerDao {
     public List<Image> getRegistryImages() {
         List<Image> result = Lists.newArrayList();
 
-        Repository repository = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/_catalog", Repository.class);
+        Repository repository = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/_catalog", Repository.class);
 
         List<String> imageNames = repository.getImageNames();
 
         for (String imageName : imageNames) {
-            ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/" + imageName + "/tags/list", ImageTags.class);
+            ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + imageName + "/tags/list", ImageTags.class);
             if (imageTags.getTags() != null && !imageTags.getTags().isEmpty())
                 result.add(new Image(imageName, imageTags.getTags()));
         }
