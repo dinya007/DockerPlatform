@@ -7,6 +7,7 @@ public class StartContainerParams {
     private final String imageName;
     private final String appName;
     private Ports portsBinding;
+    private String networkName;
 
     public StartContainerParams(String imageName, String appName) {
         this.imageName = imageName;
@@ -27,5 +28,13 @@ public class StartContainerParams {
 
     public void setPortsBinding(Ports portsBinding) {
         this.portsBinding = portsBinding;
+    }
+
+    public void setNetworkName(String networkName) {
+        this.networkName = networkName;
+    }
+
+    public String getNetworkName() {
+        return networkName;
     }
 }

@@ -6,11 +6,11 @@ COMMIT;
 INSERT INTO HOSTS (host_id, url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE)
 VALUES (0, '192.168.99.100', 'default', '/Users/denis/.docker/machine/machines/default', TRUE, SYSDATE, SYSDATE);
 INSERT INTO HOSTS (host_id, url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES
-  (1, '192.168.99.101', 'mh-keystore', '/Users/denis/.docker/machine/machines/mh-keystore', FALSE, SYSDATE, SYSDATE);
+  (1, '192.168.99.110', 'mh-keystore', '/Users/denis/.docker/machine/machines/mh-keystore', FALSE, SYSDATE, SYSDATE);
 INSERT INTO HOSTS (host_id, url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES
-  (2, '192.168.99.104', 'master-node', '/Users/denis/.docker/machine/machines/master-node', FALSE, SYSDATE, SYSDATE);
+  (2, '192.168.99.111', 'master-node', '/Users/denis/.docker/machine/machines/master-node', FALSE, SYSDATE, SYSDATE);
 INSERT INTO HOSTS (host_id, url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES
-  (3, '192.168.99.105', 'slave-node-1', '/Users/denis/.docker/machine/machines/slave-node-1', FALSE, SYSDATE, SYSDATE);
+  (3, '192.168.99.112', 'slave-node-1', '/Users/denis/.docker/machine/machines/slave-node-1', FALSE, SYSDATE, SYSDATE);
 -- INSERT INTO HOSTS (url, name, host_path, registry_flag, CREATED_DATE, MODIFIED_DATE) VALUES ('192.168.99.101', 'test-machine', '/Users/denis/.docker/machine/machines/default', FALSE , SYSDATE, SYSDATE);
 COMMIT;
 

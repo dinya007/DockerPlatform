@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 import ru.tisov.denis.platform.async.callbacks.LogCallback;
 import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
 import ru.tisov.denis.platform.da.ContainerDao;
+import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
 import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.Network;
 import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
@@ -21,6 +23,7 @@ import ru.tisov.denis.platform.enums.Ports;
 import ru.tisov.denis.platform.service.HostService;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 @Component
@@ -29,13 +32,16 @@ public class ContainerDaoImpl implements ContainerDao {
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
+    private EnvironmentDao environmentDao;
+
     @Resource(name = "logQueue")
     private BlockingQueue<Log> logQueue;
 
     @Autowired
-    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService) {
+    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao) {
         this.dockerClientFactory = dockerClientFactory;
         this.hostService = hostService;
+        this.environmentDao = environmentDao;
     }
 
     @Override
@@ -98,6 +104,10 @@ public class ContainerDaoImpl implements ContainerDao {
         } finally {
             StartContainerParams params = new StartContainerParams(fullImageName, container.getName());
             params.setPortsBinding(portsBinding);
+            List<Network> networks = environmentDao.getById(container.getEnvironmentId()).getNetworks();
+            if (!networks.isEmpty())
+                params.setNetworkName(networks.get(0).getName());
+
             dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params));
         }
     }

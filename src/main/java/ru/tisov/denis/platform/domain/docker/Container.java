@@ -14,6 +14,7 @@ public class Container {
     private String imageName;
     private List<String> networks;
     private String status;
+    private Long environmentId;
     private boolean isRunning;
 
     public Container() {
@@ -81,6 +82,14 @@ public class Container {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public Long getEnvironmentId() {
+        return environmentId;
+    }
+
+    public void setEnvironmentId(Long environmentId) {
+        this.environmentId = environmentId;
     }
 
     @Override
