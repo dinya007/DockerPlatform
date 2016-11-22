@@ -16,11 +16,11 @@
                         <th class="text-center">Actions</th>
                     </tr>
                     <#include "appCreationInfoModal.ftl" >
-                    <tr ng-repeat="image in images" ng-controller="selectedImageController">
-                        <td>{{image.name}}</td>
+                    <tr ng-repeat="imageName in images" ng-controller="selectedImageController">
+                        <td>{{imageName.name}}</td>
                         <td>
                             <select ng-change="$scope.selectedImage = selectedImage" ng-model="selectedImage">
-                                <option ng-repeat="tag in image.tags" value="{{image.name}}:{{tag}}">{{tag}}
+                                <option ng-repeat="tag in imageName.tags" value="{{imageName.name}}:{{tag}}">{{tag}}
                                 </option>
                             </select>
                         </td>

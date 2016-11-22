@@ -6,16 +6,14 @@ public class StartContainerParams {
 
     private final String imageName;
     private final String appName;
+    private Environment environment;
+    private Host host;
     private Ports portsBinding;
     private String networkName;
 
     public StartContainerParams(String imageName, String appName) {
         this.imageName = imageName;
         this.appName = appName;
-    }
-
-    public String getImageName() {
-        return imageName;
     }
 
     public String getAppName() {
@@ -37,4 +35,26 @@ public class StartContainerParams {
     public String getNetworkName() {
         return networkName;
     }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+
 }

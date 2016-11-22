@@ -5,11 +5,12 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PullResponseItem;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.tisov.denis.platform.config.JVMConfigurator;
+import ru.tisov.denis.platform.domain.JVMOption;
 import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.service.impl.ContainerServiceImpl;
 
@@ -22,12 +23,14 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     private final DockerClient dockerClient;
     private final boolean startAfterCreate;
     private final StartContainerParams params;
+    private final JVMConfigurator jvmConfigurator;
 
 
-    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params) {
+    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params, JVMConfigurator jvmConfigurator) {
         this.dockerClient = dockerClient;
         this.startAfterCreate = startAfterCreate;
         this.params = params;
+        this.jvmConfigurator = jvmConfigurator;
     }
 
     @Override
@@ -61,6 +64,10 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
             containerCmd = containerCmd
                     .withNetworkDisabled(false)
                     .withNetworkMode(params.getNetworkName());
+
+        JVMOption jvmOptions = jvmConfigurator.getJVMOptions(params.getEnvironment(), params.getHost(), params.getImageName());
+
+        if (jvmOptions != null) containerCmd.withEnv("JAVA_OPTS=" + jvmOptions.getOptions());
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();
 

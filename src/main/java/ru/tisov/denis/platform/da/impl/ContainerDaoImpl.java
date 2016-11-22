@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.tisov.denis.platform.async.callbacks.LogCallback;
 import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
+import ru.tisov.denis.platform.config.JVMConfigurator;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
-import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.domain.Network;
-import ru.tisov.denis.platform.domain.StartContainerParams;
+import ru.tisov.denis.platform.domain.*;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
 import ru.tisov.denis.platform.enums.Hosts;
@@ -32,16 +31,18 @@ public class ContainerDaoImpl implements ContainerDao {
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
-    private EnvironmentDao environmentDao;
+    private final EnvironmentDao environmentDao;
+    private final JVMConfigurator jvmConfigurator;
 
     @Resource(name = "logQueue")
     private BlockingQueue<Log> logQueue;
 
     @Autowired
-    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao) {
+    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao, JVMConfigurator jvmConfigurator) {
         this.dockerClientFactory = dockerClientFactory;
         this.hostService = hostService;
         this.environmentDao = environmentDao;
+        this.jvmConfigurator = jvmConfigurator;
     }
 
     @Override
@@ -96,6 +97,7 @@ public class ContainerDaoImpl implements ContainerDao {
         if (registryIp.equals(currentHost.getUrl())) registryIp = Hosts.LOCAL_HOST.getIp();
 
         String fullImageName = registryIp + ":" + Ports.REGISTRY_PORT.getPort() + "/" + container.getImageName();
+        Environment environment = environmentDao.getById(container.getEnvironmentId());
 
         try {
             dockerClient.listImagesCmd().exec().forEach(image -> dockerClient.removeImageCmd(image.getId()).withForce(true).exec());
@@ -103,12 +105,17 @@ public class ContainerDaoImpl implements ContainerDao {
             logger.info("Unable to delete image", ex);
         } finally {
             StartContainerParams params = new StartContainerParams(fullImageName, container.getName());
+
+            params.setHost(currentHost);
+            params.setEnvironment(environment);
             params.setPortsBinding(portsBinding);
-            List<Network> networks = environmentDao.getById(container.getEnvironmentId()).getNetworks();
+
+            List<Network> networks = environment.getNetworks();
             if (!networks.isEmpty())
                 params.setNetworkName(networks.get(0).getName());
 
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params));
+
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params, jvmConfigurator));
         }
     }
 
