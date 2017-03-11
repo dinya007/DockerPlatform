@@ -1,5 +1,8 @@
-var dockerApp = angular.module('dockerApp',[]);
+dockerApp.controller('environmentController', function ($scope, $routeParams, environmentService) {
 
-dockerApp.controller('EnvironmentController', function($scope){
-    $scope.name = 'Toma';
+    environmentService.getEnvironment($routeParams.environmentId)
+        .then(function (data) {
+            $scope.activeEnvironment = data;
+        });
+
 });

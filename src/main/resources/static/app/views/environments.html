@@ -1,0 +1,11 @@
+<table class="table table-striped table-bordered text-center">
+    <caption><h4>Environments</h4></caption>
+    <tbody>
+    <tr>
+        <th class="text-center">Name</th>
+    </tr>
+    <tr ng-repeat="environment in allEnvironments">
+        <td><a href="#/environment/{{environment.id}}">{{environment.name}}</a></td>
+    </tr>
+    </tbody>
+</table>

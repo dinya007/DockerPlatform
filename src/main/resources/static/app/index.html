@@ -2,20 +2,22 @@
 <html lang="en" ng-app="dockerApp">
 <head>
     <script src="/angular/angular.js"></script>
+    <script src="/angular/angular-route.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/bootstrap/js/bootstrap.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/page.css">
     <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.css">
 
+    <script src="/app/js/router.js"></script>
+    <script src="/app/js/rest-service.js"></script>
     <script src="/app/js/environment-controller.js"></script>
+    <script src="/app/js/environments-controller.js"></script>
+    <script src="/app/js/environment-service.js"></script>
 </head>
 <body>
-<div ng-controller="EnvironmentController">
-    <label>Name:</label>
-    <input type="text" ng-model="name" placeholder="Enter a name here">
-    <hr>
-    <h1>Hello {{name}}!</h1>
-</div>
+    <dev>
+        <ng-view></ng-view>
+    </dev>
 </body>
 </html>

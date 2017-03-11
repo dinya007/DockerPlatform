@@ -2,9 +2,9 @@ package ru.tisov.denis.platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.tisov.denis.platform.domain.Environment;
 import ru.tisov.denis.platform.service.EnvironmentService;
 
@@ -20,28 +20,21 @@ public class EnvironmentController {
         this.environmentService = environmentService;
     }
 
-
-//    @RequestMapping(value = {"/env/", "/*"})
-    public String getAllEnvironments(Model model) {
-        model.addAttribute("environments", environmentService.getAll());
-        return "environments";
-    }
-
-    @RequestMapping(value = {"/env/", "/*"})
+    @RequestMapping(value = {"/*"})
     public String getEnvironmentPage() {
         return "app/index.html";
     }
 
-    @RequestMapping("/env/{id}")
-    public String getEnvironment(@PathVariable Long id, Model model) {
-        model.addAttribute("hosts", environmentService.getById(id).getHosts());
-        model.addAttribute("selectedEnvironment", id);
-        return "environment";
+    @RequestMapping(value = "/environment/all")
+    @ResponseBody
+    public List<Environment> getAllEnvironment() {
+        return environmentService.getAll();
     }
 
-    @RequestMapping("/env/all")
-    public List<Environment> getAllEnvironment(@PathVariable Long id, Model model) {
-        return environmentService.getAll();
+    @RequestMapping(value = "/environment/{environmentId}")
+    @ResponseBody
+    public Environment getAllEnvironment(@PathVariable Long environmentId) {
+        return environmentService.getById(environmentId);
     }
 
 }
