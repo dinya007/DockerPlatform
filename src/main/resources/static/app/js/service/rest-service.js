@@ -14,4 +14,8 @@ dockerApp.service('restService', function ($http, $q) {
         return deferred.promise;
     };
 
+    this.delete = function (url) {
+        $http.delete(url);
+    };
+
 });
