@@ -14,10 +14,10 @@
             http://{{host.url}}:{{container.port}}</a>
         </td>
         <td>
-            <button ng-click="restartContainer()">restart</button>
-            <button ng-click="stopContainer()">stop</button>
-            <button ng-click="removeContainer()">remove</button>
-            <button ng-click="openLogs()">logs</button>
+            <button ng-click="restartContainer(container)">restart</button>
+            <button ng-click="stopContainer(container)">stop</button>
+            <button ng-click="deleteContainer(container)">remove</button>
+            <button ng-click="openLogs(container)">logs</button>
         </td>
     </tr>
     </tbody>

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 import ru.tisov.denis.platform.da.DockerDao;
+import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
@@ -21,10 +22,12 @@ public class DockerDaoImpl implements DockerDao {
     private final Logger logger = LoggerFactory.getLogger(DockerDaoImpl.class);
 
     private final DockerClient dockerClient;
+    private Host host;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public DockerDaoImpl(DockerClient dockerClient) {
+    public DockerDaoImpl(DockerClient dockerClient, Host host) {
         this.dockerClient = dockerClient;
+        this.host = host;
     }
 
     @Override
@@ -86,6 +89,7 @@ public class DockerDaoImpl implements DockerDao {
             result.setStatus(container.getStatus());
             result.setRunning(runningContainers == null || runningContainers.contains(result));
             result.setImageName(container.getImage());
+            result.setHostName(host.getName());
             return result;
         }
     }

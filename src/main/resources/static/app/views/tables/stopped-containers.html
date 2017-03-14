@@ -10,8 +10,8 @@
     <tr ng-repeat="container in stoppedContainers">
         <td>{{container.name}}</td>
         <td>
-            <button ng-click="startContainer()">start</button>
-            <button ng-click="removeContainer()">remove</button>
+            <button ng-click="startContainer(container)">start</button>
+            <button ng-click="deleteContainer(container)">remove</button>
         </td>
     </tr>
     </tbody>

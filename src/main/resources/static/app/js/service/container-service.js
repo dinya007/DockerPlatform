@@ -1,14 +1,19 @@
 dockerApp.service('containerService', function (restService) {
 
-    $scope.removeContainer = function () {
-        restService.delete("/action/removeContainer/" + $scope.host.name + "/" + $scope.container.id);
+    this.delete = function (container) {
+        return restService.delete("/action/container/delete/" + container.hostName + "/" + container.id);
     };
 
-    $scope.startContainer = function () {
-        $http.post("/action/startContainer/", getContainerInfo($scope));
+    this.start = function (container) {
+        return restService.post("/action/container/start", container)
+    };
 
-        $scope.updateRunningContainers($scope.host.id);
-        $scope.updateStoppedContainers($scope.host.id);
+    this.stop = function (container) {
+        return restService.post("/action/container/stop", container)
+    };
+
+    this.restart = function (container) {
+        return restService.post("/action/container/restart", container)
     };
 
 });
