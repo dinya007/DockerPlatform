@@ -56,20 +56,7 @@ public class HostController {
         return hostService.getById(id);
     }
 
-    @ResponseBody
-    @RequestMapping("/repositoryImages")
-    public List<Image> getRepositoryImages() {
-        Host host = hostService.getRegistryHost();
-        DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
 
-        List<Image> registryImages;
-        try {
-            registryImages = dockerService.getRegistryImages();
-        } catch (ResourceAccessException | HttpClientErrorException ex) {
-            registryImages=  Collections.emptyList();
-        }
-        return registryImages;
-    }
 
     @ResponseBody
     @RequestMapping("/{id}/runningContainers")

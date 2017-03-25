@@ -16,4 +16,8 @@ dockerApp.service('containerService', function (restService) {
         return restService.post("/action/container/restart", container)
     };
 
+    this.create = function (container) {
+        return restService.put('/action/container/create', container);
+    };
+
 });
