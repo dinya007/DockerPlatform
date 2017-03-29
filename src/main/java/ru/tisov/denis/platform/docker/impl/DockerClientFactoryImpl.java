@@ -45,7 +45,7 @@ public class DockerClientFactoryImpl implements DockerClientFactory {
         Host host = hostService.getByName(hostName);
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://" + host.getUrl() + ":2376")
-                .withDockerCertPath("/Users/denis/.docker/machine/machines/" + hostName)
+                .withDockerCertPath(host.getHostPath())
                 .withApiVersion("1.12")
                 .withRegistryUrl(registryUrl)
                 .build();
