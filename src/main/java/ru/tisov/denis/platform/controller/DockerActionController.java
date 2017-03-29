@@ -23,8 +23,12 @@ public class DockerActionController {
 
     @RequestMapping(value = "/container/create", method = RequestMethod.PUT)
     @ResponseBody
-    public Result createContainer(@RequestBody Container container) {
-        containerService.create(container);
+    public Result createContainer(@RequestBody Container container, @RequestParam("start") boolean start) {
+        if (start) {
+            containerService.createAndStart(container);
+        } else {
+            containerService.create(container);
+        }
         return new Result(container.getId());
     }
 
@@ -55,7 +59,7 @@ public class DockerActionController {
         Container container = new Container();
         container.setHostName(hostName);
         container.setId(containerId);
-//        containerService.remove(container);
+        containerService.remove(container);
         return new Result(container.getId());
     }
 

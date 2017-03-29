@@ -1,4 +1,4 @@
-dockerApp.controller('hostController', function ($scope, hostService, containerService) {
+dockerApp.controller('hostController', function ($scope, $window, hostService, containerService) {
 
     var update = function(){
         hostService.getRunningContainers($scope.environmentId)
@@ -45,12 +45,5 @@ dockerApp.controller('hostController', function ($scope, hostService, containerS
         });
 
     };
-
-    $scope.openLogs = function (container) {
-        // containerService.restart(container);
-        // update($scope.environmentId);
-
-    };
-
 
 });

@@ -1,4 +1,4 @@
-dockerApp.controller('environmentController', function ($scope, $routeParams, environmentService, hostService, imageService, containerService) {
+dockerApp.controller('environmentController', function ($scope, $routeParams, $window, $timeout, environmentService, hostService, imageService, containerService) {
 
     $scope.init = function(){
         $scope.environmentId = $routeParams.environmentId;
@@ -28,12 +28,7 @@ dockerApp.controller('environmentController', function ($scope, $routeParams, en
         $scope.selectedImage = image;
     };
 
-    $scope.createContainer = function (selectedContainerName, selectedPort) {
-        console.log($scope.selectedHost);
-        console.log($scope.selectedImage);
-        console.log(selectedContainerName);
-        console.log(selectedPort);
-
+    $scope.createContainer = function (selectedContainerName, selectedPort, isStart) {
         var container = {};
         container.imageName = $scope.selectedImage;
         container.hostName = $scope.selectedHost.name;
@@ -41,7 +36,16 @@ dockerApp.controller('environmentController', function ($scope, $routeParams, en
         container.port = selectedPort;
         container.environmentId = $scope.environmentId;
 
-        containerService.create(container);
+        containerService.create(container, isStart).then(function (data) {
+            $timeout(function () {
+                $scope.init();
+            }, 5000);
+
+        });
+    };
+
+    $scope.openLogs = function (host, container) {
+        $window.open("#/logs/" + host.name + "/" + container.id, "_blank");
     };
 
 });

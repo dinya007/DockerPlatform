@@ -1,4 +1,4 @@
-app.controller('runningContainersController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+app.controller('runningContainersController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
 
     $scope.restartContainer = function () {
         $http.post("/action/restartContainer/", getContainerInfo($scope));
@@ -19,8 +19,15 @@ app.controller('runningContainersController', ['$scope', '$http', '$window', fun
         $scope.updateRunningContainers($scope.host.id);
     };
 
-    $scope.openLogs = function () {
-        $window.open('/logs/?hostName=' + $scope.host.name + '&containerId=' + $scope.container.id, '_blank');
+    $scope.openLogs = function (host, container) {
+        // <
+        // a
+        // ng - href = "#/logs/{{host.name}}/{{container.id}}"
+        // target = "_blank" > logs
+            // < / a >
+            // $location.path("#/logs/" + host.name + "/" + container.id + ")", "_blank");
+        $window.open("#/logs/" + host.name + "/" + container.id + ")", "_blank");
+        // $window.open('/logs/?hostName=' + $scope.host.name + '&containerId=' + $scope.container.id, '_blank');
     };
 
 }]);
