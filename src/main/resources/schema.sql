@@ -1,8 +1,21 @@
 DROP TABLE IF EXISTS rel_environments_hosts;
+DROP TABLE IF EXISTS rel_environments_networks;
 DROP TABLE IF EXISTS environments;
 DROP TABLE IF EXISTS running_applications;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS hosts;
+DROP TABLE IF EXISTS networks;
+
+CREATE TABLE networks
+(
+  network_id INTEGER IDENTITY PRIMARY KEY NOT NULL,
+  docker_network_id VARCHAR(256) NOT NULL,
+  name           VARCHAR(100),
+  created_date   TIMESTAMP,
+  modified_date  TIMESTAMP,
+);
+
+COMMIT;
 
 CREATE TABLE environments
 (
@@ -33,6 +46,16 @@ CREATE TABLE rel_environments_hosts
   host_id        INTEGER,
   FOREIGN KEY (environment_id) REFERENCES environments (environment_id),
   FOREIGN KEY (host_id) REFERENCES hosts (host_id)
+);
+
+COMMIT;
+
+CREATE TABLE rel_environments_networks
+(
+  environment_id INTEGER,
+  network_id     INTEGER,
+  FOREIGN KEY (environment_id) REFERENCES environments (environment_id),
+  FOREIGN KEY (network_id) REFERENCES networks (network_id)
 );
 
 COMMIT;

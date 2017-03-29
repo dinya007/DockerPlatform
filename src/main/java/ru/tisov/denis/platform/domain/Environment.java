@@ -2,7 +2,6 @@ package ru.tisov.denis.platform.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,8 +21,11 @@ public class Environment {
             inverseJoinColumns = {@JoinColumn(name = "host_id")})
     private List<Host> hosts;
 
-    public Environment() {
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "rel_environments_networks",
+            joinColumns = {@JoinColumn(name = "environment_id")},
+            inverseJoinColumns = {@JoinColumn(name = "network_id")})
+    private List<Network> networks;
 
     public Long getId() {
         return id;
@@ -63,5 +65,41 @@ public class Environment {
 
     public void setHosts(List<Host> hosts) {
         this.hosts = hosts;
+    }
+
+    public List<Network> getNetworks() {
+        return networks;
+    }
+
+    public void setNetworks(List<Network> networks) {
+        this.networks = networks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Environment that = (Environment) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Environment{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdDate=" + createdDate +
+                ", modifiedDate=" + modifiedDate +
+                ", hosts=" + hosts +
+                ", networks=" + networks +
+                '}';
     }
 }

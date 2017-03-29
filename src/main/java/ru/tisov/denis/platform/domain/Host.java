@@ -4,8 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "hosts")
@@ -21,9 +21,6 @@ public class Host {
     private boolean isRegistry;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    public Host() {
-    }
 
     public Long getId() {
         return id;
@@ -79,5 +76,34 @@ public class Host {
 
     public void setRegistry(boolean registry) {
         isRegistry = registry;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Host host = (Host) o;
+
+        return id != null ? id.equals(host.id) : host.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Host{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", hostPath='" + hostPath + '\'' +
+                ", isRegistry=" + isRegistry +
+                ", createdDate=" + createdDate +
+                ", modifiedDate=" + modifiedDate +
+                '}';
     }
 }

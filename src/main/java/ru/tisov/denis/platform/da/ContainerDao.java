@@ -1,16 +1,18 @@
 package ru.tisov.denis.platform.da;
 
+import ru.tisov.denis.platform.domain.docker.Container;
+
 public interface ContainerDao {
 
-    void startContainer(String hostName, String containerId);
+    void start(Container container);
 
-    void stopContainer(String hostName, String containerId);
+    void stop(Container container);
 
-    void removeContainer(String hostName, String containerId);
+    void remove(Container container);
 
-    void restartContainer(String hostName, String containerId);
+    void restart(Container container);
 
-    void loadLogs(String hostName, String containerId);
+    void create(Container container, boolean startAfterCreate);
 
-    void createContainer(String hostName, String imageName, String appName, Integer port, boolean startAfterCreate);
+    void loadLogs(Container container);
 }

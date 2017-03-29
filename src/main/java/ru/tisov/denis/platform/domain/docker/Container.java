@@ -1,16 +1,21 @@
 package ru.tisov.denis.platform.domain.docker;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Container {
 
     private String id;
     private String name;
-    private String port;
+    private Integer port;
+    private String hostName;
+    private String imageName;
     private List<String> networks;
     private String status;
+    private Long environmentId;
     private boolean isRunning;
-    private String baseImage;
 
     public Container() {
     }
@@ -31,11 +36,11 @@ public class Container {
         this.name = name;
     }
 
-    public String getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
@@ -63,12 +68,28 @@ public class Container {
         isRunning = running;
     }
 
-    public String getBaseImage() {
-        return baseImage;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setBaseImage(String baseImage) {
-        this.baseImage = baseImage;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public Long getEnvironmentId() {
+        return environmentId;
+    }
+
+    public void setEnvironmentId(Long environmentId) {
+        this.environmentId = environmentId;
     }
 
     @Override

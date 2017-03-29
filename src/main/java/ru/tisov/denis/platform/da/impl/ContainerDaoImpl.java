@@ -4,97 +4,126 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.tisov.denis.platform.async.callbacks.LogCallback;
 import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
+import ru.tisov.denis.platform.config.JVMConfigurator;
 import ru.tisov.denis.platform.da.ContainerDao;
+import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
-import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.*;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.Log;
-import ru.tisov.denis.platform.services.HostService;
+import ru.tisov.denis.platform.enums.Hosts;
+import ru.tisov.denis.platform.enums.Ports;
+import ru.tisov.denis.platform.service.HostService;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 @Component
 public class ContainerDaoImpl implements ContainerDao {
 
-
     private static final Logger logger = LoggerFactory.getLogger(ContainerDaoImpl.class);
-
-    @Resource(name="logQueue")
-    private BlockingQueue<Log> logQueue;
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
+    private final EnvironmentDao environmentDao;
+    private final JVMConfigurator jvmConfigurator;
+
+    @Resource(name = "logQueue")
+    private BlockingQueue<Log> logQueue;
 
     @Autowired
-    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService) {
+    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao, JVMConfigurator jvmConfigurator) {
         this.dockerClientFactory = dockerClientFactory;
         this.hostService = hostService;
+        this.environmentDao = environmentDao;
+        this.jvmConfigurator = jvmConfigurator;
     }
 
     @Override
-    public void startContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.startContainerCmd(containerId).exec();
+    public void start(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.startContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void stopContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
+    public void stop(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
         try {
-            dockerClient.stopContainerCmd(containerId).exec();
+            dockerClient.stopContainerCmd(container.getId()).exec();
         } catch (NotModifiedException e) {
             logger.info("Container already stopped.", e);
         }
     }
 
     @Override
-    public void removeContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.removeContainerCmd(containerId).exec();
+    public void remove(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.removeContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void restartContainer(String hostName, String containerId) {
-        DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
-        dockerClient.restartContainerCmd(containerId).exec();
+    public void restart(Container container) {
+        DockerClient dockerClient = dockerClientFactory.getDockerClient(container.getHostName());
+        dockerClient.restartContainerCmd(container.getId()).exec();
     }
 
     @Override
-    public void loadLogs(String hostName, String containerId) {
+    public void loadLogs(Container container) {
+        String hostName = container.getHostName();
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
+        String containerId = container.getId();
         dockerClient.logContainerCmd(containerId).withStdErr(true).withStdOut(true).withTail(200).exec(new LogCallback(logQueue, hostName, containerId));
     }
 
     @Override
-    public void createContainer(String hostName, String imageName, String appName, Integer port, boolean startAfterCreate) {
+    public void create(Container container, boolean startAfterCreate) {
+        String hostName = container.getHostName();
+        Integer port = container.getPort();
+
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        Ports portsBinding = null;
-        if (port != null) {
-            ExposedPort exposedPort = ExposedPort.tcp(8080);
-            portsBinding = new Ports();
-            portsBinding.bind(exposedPort, Ports.binding(port));
-        }
+        com.github.dockerjava.api.model.Ports portsBinding = null;
+
+        if (port != null) portsBinding = bindPorts(port);
 
         String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
-        if (registryIp.equals(currentHost.getUrl())) registryIp = "127.0.0.1";
+        if (registryIp.equals(currentHost.getUrl())) registryIp = Hosts.LOCAL_HOST.getIp();
 
-        String fullImageName = registryIp + ":5000" + "/" + imageName;
+        String fullImageName = registryIp + ":" + Ports.REGISTRY_PORT.getPort() + "/" + container.getImageName();
+        Environment environment = environmentDao.getById(container.getEnvironmentId());
 
         try {
             dockerClient.listImagesCmd().exec().forEach(image -> dockerClient.removeImageCmd(image.getId()).withForce(true).exec());
         } catch (ConflictException ex) {
             logger.info("Unable to delete image", ex);
         } finally {
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(fullImageName, appName, dockerClient, portsBinding, startAfterCreate));
+            StartContainerParams params = new StartContainerParams(fullImageName, container.getName());
+
+            params.setHost(currentHost);
+            params.setEnvironment(environment);
+            params.setPortsBinding(portsBinding);
+
+            List<Network> networks = environment.getNetworks();
+            if (!networks.isEmpty())
+                params.setNetworkName(networks.get(0).getName());
+
+
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params, jvmConfigurator));
         }
+    }
+
+    private com.github.dockerjava.api.model.Ports bindPorts(Integer port) {
+        com.github.dockerjava.api.model.Ports portsBinding = new com.github.dockerjava.api.model.Ports();
+        ExposedPort exposedPort = ExposedPort.tcp(Ports.DEFAULT_PORT.getPort());
+        portsBinding.bind(exposedPort, new com.github.dockerjava.api.model.Ports.Binding(null, port.toString()));
+        return portsBinding;
     }
 
 }

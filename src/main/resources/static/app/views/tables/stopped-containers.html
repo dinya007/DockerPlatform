@@ -1,0 +1,16 @@
+<table class="table table-striped table-bordered table-condensed text-center full-width-div">
+    <caption><h4>Stopped apps</h4></caption>
+    <tbody>
+    <tr>
+        <th class="text-center">Name</th>
+        <th class="text-center">Actions</th>
+    </tr>
+    <tr ng-repeat="container in stoppedContainers">
+        <td>{{container.name}}</td>
+        <td>
+            <button ng-click="startContainer(container)">start</button>
+            <button ng-click="deleteContainer(container)">remove</button>
+        </td>
+    </tr>
+    </tbody>
+</table>

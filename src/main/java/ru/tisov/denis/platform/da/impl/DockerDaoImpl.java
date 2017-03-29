@@ -1,21 +1,18 @@
 package ru.tisov.denis.platform.da.impl;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.ContainerPort;
-import com.github.dockerjava.api.model.Frame;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 import ru.tisov.denis.platform.da.DockerDao;
+import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
 import ru.tisov.denis.platform.domain.docker.Repository;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -25,22 +22,24 @@ public class DockerDaoImpl implements DockerDao {
     private final Logger logger = LoggerFactory.getLogger(DockerDaoImpl.class);
 
     private final DockerClient dockerClient;
+    private Host host;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public DockerDaoImpl(DockerClient dockerClient) {
+    public DockerDaoImpl(DockerClient dockerClient, Host host) {
         this.dockerClient = dockerClient;
+        this.host = host;
     }
 
     @Override
     public List<Image> getRegistryImages() {
         List<Image> result = Lists.newArrayList();
 
-        Repository repository = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/_catalog", Repository.class);
+        Repository repository = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/_catalog", Repository.class);
 
         List<String> imageNames = repository.getImageNames();
 
         for (String imageName : imageNames) {
-            ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + "/v2/" + imageName + "/tags/list", ImageTags.class);
+            ImageTags imageTags = restTemplate.getForObject(dockerClient.authConfig().getRegistryAddress() + imageName + "/tags/list", ImageTags.class);
             if (imageTags.getTags() != null && !imageTags.getTags().isEmpty())
                 result.add(new Image(imageName, imageTags.getTags()));
         }
@@ -85,11 +84,12 @@ public class DockerDaoImpl implements DockerDao {
             Container result = new Container();
             result.setId(container.getId());
             result.setName(container.getNames()[0]);
-            result.setPort((ports.length > 0) ? String.valueOf(ports[0].getPublicPort()) : "");
+            result.setPort((ports.length > 0) ? ports[0].getPublicPort() : null);
             result.setNetworks(Lists.newArrayList(container.getNetworkSettings().getNetworks().keySet()));
             result.setStatus(container.getStatus());
             result.setRunning(runningContainers == null || runningContainers.contains(result));
-            result.setBaseImage(container.getImage());
+            result.setImageName(container.getImage());
+            result.setHostName(host.getName());
             return result;
         }
     }
