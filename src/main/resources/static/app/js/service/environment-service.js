@@ -8,4 +8,8 @@ dockerApp.service('environmentService', function (restService) {
         return restService.get('/environment/' + id);
     };
 
+    this.create = function (environment) {
+        return restService.post('/environment', environment);
+    };
+
 });

@@ -28,4 +28,9 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     public Environment getById(Long id) {
         return environmentDAO.getById(id);
     }
+
+    @Override
+    public Environment save(Environment environment) {
+        return environmentDAO.save(environment);
+    }
 }

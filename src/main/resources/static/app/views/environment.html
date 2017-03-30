@@ -1,5 +1,9 @@
 <div class="container-fluid" ng-init="init()">
     <div ng-include="'/app/views/modals/create-container-modal.html'" ></div>
+    <div ng-include="'/app/views/modals/add-host-modal.html'" ></div>
+    <div class="center-block">
+        <button class="glyphicon glyphicon-hdd" data-toggle="modal" data-target="#add-host-modal"></button>
+    </div>
     <table class="table table-striped table-bordered table-condensed text-center" ng-repeat="host in hosts" ng-controller="hostController" ng-init="init(host, environmentId)">
         <caption>
             <h3>{{host.name}}</h3>

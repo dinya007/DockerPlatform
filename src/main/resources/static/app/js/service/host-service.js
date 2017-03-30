@@ -4,6 +4,10 @@ dockerApp.service('hostService', function (restService) {
         return restService.get('/hosts/all/' + environmentId)
     };
 
+    this.getAllHosts = function () {
+        return restService.get('/hosts/all')
+    };
+
     this.getRunningContainers = function (environmentId) {
         return restService.get('/hosts/' + environmentId + '/runningContainers')
     };

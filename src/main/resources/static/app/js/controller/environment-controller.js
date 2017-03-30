@@ -13,6 +13,11 @@ dockerApp.controller('environmentController', function ($scope, $routeParams, $w
                 $scope.hosts = data;
             });
 
+        hostService.getAllHosts()
+            .then(function (data) {
+                $scope.allHosts = data;
+            });
+
         imageService.getRepositoryImages()
             .then(function (data) {
             $scope.repositoryImages = data;

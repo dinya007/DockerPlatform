@@ -10,4 +10,6 @@ public interface EnvironmentService {
 
     Environment getById(Long id);
 
+    Environment save(Environment environment);
+
 }
