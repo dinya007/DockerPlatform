@@ -5,17 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
 import ru.tisov.denis.platform.domain.Host;
-import ru.tisov.denis.platform.domain.Image;
 import ru.tisov.denis.platform.domain.docker.Container;
-import ru.tisov.denis.platform.service.DockerService;
+import ru.tisov.denis.platform.service.ContainerService;
 import ru.tisov.denis.platform.service.EnvironmentService;
 import ru.tisov.denis.platform.service.HostService;
 
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -25,17 +21,14 @@ public class HostController {
     private final HostService hostService;
     private final DockerServiceFactory dockerServiceFactory;
     private final EnvironmentService environmentService;
+    private final ContainerService containerService;
 
     @Autowired
-    public HostController(HostService hostService, DockerServiceFactory dockerServiceFactory, EnvironmentService environmentService) {
+    public HostController(HostService hostService, DockerServiceFactory dockerServiceFactory, EnvironmentService environmentService, ContainerService containerService) {
         this.hostService = hostService;
         this.dockerServiceFactory = dockerServiceFactory;
         this.environmentService = environmentService;
-    }
-
-    @RequestMapping("/{id}")
-    public String getAllEnvironments(@PathVariable Long id) {
-        return "apps";
+        this.containerService = containerService;
     }
 
     @ResponseBody
@@ -56,22 +49,16 @@ public class HostController {
         return hostService.getById(id);
     }
 
-
-
     @ResponseBody
-    @RequestMapping("/{id}/runningContainers")
-    public List<Container> getRunningContainers(@PathVariable Long id) {
-        Host host = hostService.getById(id);
-        DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
-        return dockerService.getRunningContainersWithoutRegistry();
+    @RequestMapping("/{hostId}/runningContainers/{environmentId}")
+    public List<Container> getRunningContainers(@PathVariable Long hostId, @PathVariable Long environmentId) {
+        return containerService.getRunning(hostId, environmentId);
     }
 
     @ResponseBody
-    @RequestMapping("/{id}/stoppedContainers")
-    public List<Container> getStoppedContainers(@PathVariable Long id) {
-        Host host = hostService.getById(id);
-        DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
-        return dockerService.getStoppedContainers();
+    @RequestMapping("/{hostId}/stoppedContainers/{environmentId}")
+    public List<Container> getStoppedContainers(@PathVariable Long hostId, @PathVariable Long environmentId) {
+        return containerService.getStopped(hostId, environmentId);
     }
 
 }

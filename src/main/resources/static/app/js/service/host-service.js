@@ -1,6 +1,6 @@
 dockerApp.service('hostService', function (restService) {
 
-    this.getAllHosts = function (environmentId) {
+    this.getAllHostsByEnvironment = function (environmentId) {
         return restService.get('/hosts/all/' + environmentId)
     };
 
@@ -8,12 +8,12 @@ dockerApp.service('hostService', function (restService) {
         return restService.get('/hosts/all')
     };
 
-    this.getRunningContainers = function (environmentId) {
-        return restService.get('/hosts/' + environmentId + '/runningContainers')
+    this.getRunningContainers = function (hostId, environmentId) {
+        return restService.get('/hosts/' + environmentId + '/runningContainers/' + environmentId)
     };
 
-    this.getStoppedContainers = function (environmentId) {
-        return restService.get('/hosts/' + environmentId + '/stoppedContainers')
+    this.getStoppedContainers = function (hostId, environmentId) {
+        return restService.get('/hosts/' + hostId + '/stoppedContainers/' + environmentId)
     };
 
 });

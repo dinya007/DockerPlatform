@@ -1,12 +1,12 @@
 dockerApp.controller('hostController', function ($scope, $window, hostService, containerService) {
 
     var update = function(){
-        hostService.getRunningContainers($scope.environmentId)
+        hostService.getRunningContainers($scope.environmentId, $scope.host.id)
             .then(function (data) {
                 $scope.runningContainers = data;
             });
 
-        hostService.getStoppedContainers($scope.environmentId)
+        hostService.getStoppedContainers($scope.environmentId, $scope.host.id)
             .then(function (data) {
                 $scope.stoppedContainers = data;
             });

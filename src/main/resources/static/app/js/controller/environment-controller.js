@@ -8,7 +8,7 @@ dockerApp.controller('environmentController', function ($scope, $routeParams, $w
                 $scope.activeEnvironment = data;
             });
 
-        hostService.getAllHosts($scope.environmentId)
+        hostService.getAllHostsByEnvironment($scope.environmentId)
             .then(function (data) {
                 $scope.hosts = data;
             });

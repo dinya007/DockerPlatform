@@ -12,8 +12,6 @@ public interface HostService {
 
     List<Host> getAll();
 
-    List<Host> getAll(List<Long> ids);
-
     Host getRegistryHost();
 
 }
