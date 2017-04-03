@@ -67,7 +67,7 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
 
         JVMOption jvmOptions = jvmConfigurator.getJVMOptions(params.getEnvironment(), params.getHost(), params.getImageName());
 
-        if (jvmOptions != null) containerCmd.withEnv("JAVA_OPTS=" + jvmOptions.getOptions());
+        if (jvmOptions != null) containerCmd.withEnv("JAVA_OPTS=" + jvmOptions.getOptions() + " -Dfirst.name=Denis -Dlast.name=Tisov");
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();
 

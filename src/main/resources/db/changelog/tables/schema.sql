@@ -80,4 +80,3 @@ CREATE TABLE running_applications
 );
 
 COMMIT;
-

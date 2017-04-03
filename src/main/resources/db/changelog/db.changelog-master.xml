@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="denis" id="create_tables" runOnChange="true">
+        <sqlFile path="tables/schema.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="denis" id="fill_environments_tables" runOnChange="true">
+        <loadData file="db/changelog/data/environments_table.csv"
+                  tableName="environments">
+            <column name="environment_id" type="NUMERIC"/>
+            <column name="name" type="STRING"/>
+            <column name="created_date" type="DATE"/>
+            <column name="modified_date" type="DATE"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet author="denis" id="fill_hosts_table" runOnChange="true">
+        <loadData file="db/changelog/data/hosts_table.csv"
+                  tableName="hosts">
+            <column name="host_id" type="NUMERIC"/>
+            <column name="url" type="STRING"/>
+            <column name="name" type="STRING"/>
+            <column name="host_path" type="STRING"/>
+            <column name="registry_flag" type="BOOLEAN"/>
+            <column name="created_date" type="DATE"/>
+            <column name="modified_date" type="DATE"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet author="denis" id="fill_rel_environments_hosts_table" runOnChange="true">
+        <loadData file="db/changelog/data/rel_environments_hosts_table.csv"
+                  tableName="rel_environments_hosts">
+            <column name="environment_id" type="NUMERIC"/>
+            <column name="host_id" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
