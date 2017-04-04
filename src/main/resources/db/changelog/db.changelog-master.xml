@@ -2,9 +2,7 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet author="denis" id="create_tables" runOnChange="true">
         <sqlFile path="tables/schema.sql"
@@ -39,6 +37,26 @@
                   tableName="rel_environments_hosts">
             <column name="environment_id" type="NUMERIC"/>
             <column name="host_id" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet author="denis" id="create_table_image_properties">
+        <createTable tableName="image_properties">
+            <column name="image_name" type="VARCHAR(100)"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="value" type="VARCHAR(100)"/>
+        </createTable>
+        <addNotNullConstraint columnName="image_name" tableName="image_properties"/>
+        <addNotNullConstraint columnName="name" tableName="image_properties"/>
+        <addNotNullConstraint columnName="value" tableName="image_properties"/>
+    </changeSet>
+
+    <changeSet author="denis" id="fill_table_image_properties">
+        <loadData file="db/changelog/data/image_properties_table.csv"
+                  tableName="image_properties">
+            <column name="image_name" type="STRING"/>
+            <column name="name" type="STRING"/>
+            <column name="value" type="STRING"/>
         </loadData>
     </changeSet>
 

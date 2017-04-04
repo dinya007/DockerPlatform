@@ -89,12 +89,9 @@ public class ContainerDaoImpl implements ContainerDao {
         DockerClient dockerClient = dockerClientFactory.getDockerClient(hostName);
         Host currentHost = hostService.getByName(hostName);
 
-        com.github.dockerjava.api.model.Ports portsBinding = null;
+        com.github.dockerjava.api.model.Ports portsBinding = bindPorts(port);
 
-        if (port != null) portsBinding = bindPorts(port);
-
-        String registryIp = dockerClient.authConfig().getRegistryAddress().split("//")[1].split(":")[0];
-        if (registryIp.equals(currentHost.getUrl())) registryIp = Hosts.LOCAL_HOST.getIp();
+        String registryIp = getRegistryIp(dockerClient.authConfig().getRegistryAddress(), currentHost);
 
         String fullImageName = registryIp + ":" + Ports.REGISTRY_PORT.getPort() + "/" + container.getImageName();
         Environment environment = environmentDao.getById(container.getEnvironmentId());
@@ -114,12 +111,20 @@ public class ContainerDaoImpl implements ContainerDao {
             if (!networks.isEmpty())
                 params.setNetworkName(networks.get(0).getName());
 
-
             dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params, jvmConfigurator));
         }
     }
 
+    private String getRegistryIp(String registryAddress, Host currentHost) {
+        String registryIp = registryAddress.split("//")[1].split(":")[0];
+        if (registryIp.equals(currentHost.getUrl())) {
+            registryIp = Hosts.LOCAL_HOST.getIp();
+        }
+        return registryIp;
+    }
+
     private com.github.dockerjava.api.model.Ports bindPorts(Integer port) {
+        if (port == null) return null;
         com.github.dockerjava.api.model.Ports portsBinding = new com.github.dockerjava.api.model.Ports();
         ExposedPort exposedPort = ExposedPort.tcp(Ports.DEFAULT_PORT.getPort());
         portsBinding.bind(exposedPort, new com.github.dockerjava.api.model.Ports.Binding(null, port.toString()));
