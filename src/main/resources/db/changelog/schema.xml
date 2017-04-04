@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="denis" id="create_tables" runOnChange="true">
+        <sqlFile path="tables/schema.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="denis" id="create_table_image_properties">
+        <createTable tableName="image_properties">
+            <column name="image_name" type="VARCHAR(100)"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="value" type="VARCHAR(100)"/>
+        </createTable>
+        <addNotNullConstraint columnName="image_name" tableName="image_properties"/>
+        <addNotNullConstraint columnName="name" tableName="image_properties"/>
+        <addNotNullConstraint columnName="value" tableName="image_properties"/>
+    </changeSet>
+
+</databaseChangeLog>
