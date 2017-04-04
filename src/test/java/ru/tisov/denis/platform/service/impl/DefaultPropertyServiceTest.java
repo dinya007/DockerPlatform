@@ -15,14 +15,14 @@ public class DefaultPropertyServiceTest {
 
     private final String imageName = "image";
     private final String imageTag = "1.0";
-    private final String fulImageName = imageName + ":" + imageTag;
+    private final String fullImageName = imageName + ":" + imageTag;
     private final ImagePropertyDao imagePropertyDao = mock(ImagePropertyDao.class);
     private final PropertyService propertyService = new DefaultPropertyService(imagePropertyDao);
 
     @Test
     public void testGetWithTag() throws Exception {
         Container container = new Container();
-        container.setImageName(fulImageName);
+        container.setImageName(fullImageName);
 
         propertyService.get(container);
 

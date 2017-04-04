@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS running_applications;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS networks;
+DROP TABLE IF EXISTS image_properties;
 
 CREATE TABLE networks
 (

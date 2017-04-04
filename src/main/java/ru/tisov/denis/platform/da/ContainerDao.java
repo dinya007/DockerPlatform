@@ -1,6 +1,9 @@
 package ru.tisov.denis.platform.da;
 
+import ru.tisov.denis.platform.domain.Property;
 import ru.tisov.denis.platform.domain.docker.Container;
+
+import java.util.List;
 
 public interface ContainerDao {
 
@@ -12,7 +15,7 @@ public interface ContainerDao {
 
     void restart(Container container);
 
-    void create(Container container, boolean startAfterCreate);
-
     void loadLogs(Container container);
+
+    void create(Container container, boolean startAfterCreate, List<Property> properties, List<String> jvmArgs);
 }

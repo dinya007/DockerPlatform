@@ -44,4 +44,14 @@
         </loadData>
     </changeSet>
 
+    <changeSet author="denis" id="fill_table_jvm_args">
+        <loadData file="db/changelog/data/jvm_args_table.csv"
+                  tableName="jvm_args">
+            <column name="environment_id" type="NUMERIC"/>
+            <column name="host_id" type="NUMERIC"/>
+            <column name="image_name" type="STRING"/>
+            <column name="value" type="STRING"/>
+        </loadData>
+    </changeSet>
+
 </databaseChangeLog>

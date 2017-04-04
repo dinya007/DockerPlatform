@@ -10,7 +10,7 @@ public class Environment {
 
     @Id
     @Column(name = "environment_id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalDateTime createdDate;

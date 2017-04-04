@@ -20,4 +20,17 @@
         <addNotNullConstraint columnName="value" tableName="image_properties"/>
     </changeSet>
 
+    <changeSet author="denis" id="create_table_jvm_args">
+        <createTable tableName="jvm_args">
+            <column name="environment_id" type="NUMERIC"/>
+            <column name="host_id" type="NUMERIC"/>
+            <column name="image_name" type="VARCHAR(100)"/>
+            <column name="value" type="VARCHAR(500)"/>
+        </createTable>
+        <addNotNullConstraint columnName="environment_id" tableName="jvm_args"/>
+        <addNotNullConstraint columnName="host_id" tableName="jvm_args"/>
+        <addNotNullConstraint columnName="image_name" tableName="jvm_args"/>
+        <addNotNullConstraint columnName="value" tableName="jvm_args"/>
+    </changeSet>
+
 </databaseChangeLog>

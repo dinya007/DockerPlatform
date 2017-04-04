@@ -18,6 +18,6 @@ public class DockerDaoFactoryImpl implements DockerDaoFactory {
 
     @Override
     public DockerDao getDockerDao(String hostName) {
-        return new DockerDaoImpl(dockerClientFactory.getDockerClient(hostName), hostDao.getByName(hostName ));
+        return new DockerDaoImpl(dockerClientFactory.getDockerClient(hostName), hostDao.getByName(hostName));
     }
 }

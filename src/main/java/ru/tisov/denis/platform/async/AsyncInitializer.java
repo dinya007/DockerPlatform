@@ -17,7 +17,7 @@ public class AsyncInitializer {
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         logConsumer.consumeLogs();
     }
 }

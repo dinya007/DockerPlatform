@@ -8,9 +8,7 @@ import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.docker.DockerServiceFactory;
 import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.docker.Container;
-import ru.tisov.denis.platform.service.ContainerService;
-import ru.tisov.denis.platform.service.DockerService;
-import ru.tisov.denis.platform.service.HostService;
+import ru.tisov.denis.platform.service.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,22 +21,30 @@ public class ContainerServiceImpl implements ContainerService {
     private final ContainerDao containerDao;
     private final HostService hostService;
     private final DockerServiceFactory dockerServiceFactory;
+    private final PropertyService propertyService;
+    private final JVMService jvmService;
 
     @Autowired
-    public ContainerServiceImpl(ContainerDao containerDao, HostService hostService, DockerServiceFactory dockerServiceFactory) {
+    public ContainerServiceImpl(ContainerDao containerDao, HostService hostService, DockerServiceFactory dockerServiceFactory, PropertyService propertyService, JVMService jvmService) {
         this.containerDao = containerDao;
         this.hostService = hostService;
         this.dockerServiceFactory = dockerServiceFactory;
+        this.propertyService = propertyService;
+        this.jvmService = jvmService;
     }
 
     @Override
     public void createAndStart(Container container) {
-        containerDao.create(container, true);
+        Host host = hostService.getByName(container.getHostName());
+        containerDao.create(container, true, propertyService.get(container),
+                jvmService.get(container.getEnvironmentId(), host.getId(), container.getImageName()));
     }
 
     @Override
     public void create(Container container) {
-        containerDao.create(container, false);
+        Host host = hostService.getByName(container.getHostName());
+        containerDao.create(container, false, propertyService.get(container),
+                jvmService.get(container.getEnvironmentId(), host.getId(), container.getImageName()));
     }
 
     @Override
@@ -46,8 +52,11 @@ public class ContainerServiceImpl implements ContainerService {
         Host host = hostService.getById(hostId);
         DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
         return dockerService.getRunningContainersWithoutRegistry().stream()
-//            .filter(container -> container.getEnvironmentId().equals(environmentId))
-            .collect(Collectors.toList());
+                .map(container -> {
+                    container.setEnvironmentId(0L);
+                    return container;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -55,8 +64,11 @@ public class ContainerServiceImpl implements ContainerService {
         Host host = hostService.getById(hostId);
         DockerService dockerService = dockerServiceFactory.getDockerService(host.getName());
         return dockerService.getStoppedContainers().stream()
-//            .filter(container -> container.getEnvironmentId().equals(environmentId))
-            .collect(Collectors.toList());
+                .map(container -> {
+                    container.setEnvironmentId(0L);
+                    return container;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

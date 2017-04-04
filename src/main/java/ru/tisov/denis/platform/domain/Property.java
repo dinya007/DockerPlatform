@@ -55,8 +55,8 @@ public class Property {
     @Override
     public String toString() {
         return "Property{" +
-            "name='" + name + '\'' +
-            ", value='" + value + '\'' +
-            '}';
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

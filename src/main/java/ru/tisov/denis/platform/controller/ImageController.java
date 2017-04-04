@@ -38,7 +38,7 @@ public class ImageController {
         try {
             registryImages = dockerService.getRegistryImages();
         } catch (ResourceAccessException | HttpClientErrorException ex) {
-            registryImages=  Collections.emptyList();
+            registryImages = Collections.emptyList();
         }
         return registryImages;
     }

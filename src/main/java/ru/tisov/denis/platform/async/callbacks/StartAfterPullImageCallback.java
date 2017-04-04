@@ -9,12 +9,14 @@ import com.github.dockerjava.api.model.PullResponseItem;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.tisov.denis.platform.config.JVMConfigurator;
-import ru.tisov.denis.platform.domain.JVMOption;
+import ru.tisov.denis.platform.domain.Property;
 import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.service.impl.ContainerServiceImpl;
 
 import java.io.Closeable;
+import java.util.List;
+
+import static java.lang.String.join;
 
 public class StartAfterPullImageCallback implements ResultCallback<PullResponseItem> {
 
@@ -23,14 +25,16 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     private final DockerClient dockerClient;
     private final boolean startAfterCreate;
     private final StartContainerParams params;
-    private final JVMConfigurator jvmConfigurator;
+    private List<Property> properties;
+    private List<String> jvmArgs;
 
 
-    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params, JVMConfigurator jvmConfigurator) {
+    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params, List<Property> properties, List<String> jvmArgs) {
         this.dockerClient = dockerClient;
         this.startAfterCreate = startAfterCreate;
         this.params = params;
-        this.jvmConfigurator = jvmConfigurator;
+        this.properties = properties;
+        this.jvmArgs = jvmArgs;
     }
 
     @Override
@@ -65,9 +69,7 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
                     .withNetworkDisabled(false)
                     .withNetworkMode(params.getNetworkName());
 
-        JVMOption jvmOptions = jvmConfigurator.getJVMOptions(params.getEnvironment(), params.getHost(), params.getImageName());
-
-        if (jvmOptions != null) containerCmd.withEnv("JAVA_OPTS=" + jvmOptions.getOptions() + " -Dfirst.name=Denis -Dlast.name=Tisov");
+        containerCmd.withEnv("JAVA_OPTS=" + join(" ", jvmArgs) + " " + getProperties(properties));
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();
 
@@ -77,5 +79,12 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     @Override
     public void close() {
 
+    }
+
+    static String getProperties(List<Property> properties) {
+        return properties.stream()
+                .map(property -> "-D" + property.getName() + "=" + property.getValue())
+                .reduce((p1, p2) -> join(" ", p1, p2))
+                .orElse("");
     }
 }
