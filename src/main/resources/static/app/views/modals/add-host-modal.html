@@ -13,7 +13,7 @@
                         <th class="text-center">Name</th>
                         <th class="text-center">URL</th>
                     </tr>
-                    <tr ng-repeat="host in allHosts">
+                    <tr ng-repeat="host in allHosts | minus:hosts">
                         <td>{{host.name}}</td>
                         <td>{{host.url}}</td>
                     </tr>
