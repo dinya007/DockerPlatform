@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import ru.tisov.denis.platform.async.callbacks.LogCallback;
 import ru.tisov.denis.platform.async.callbacks.StartAfterPullImageCallback;
 import ru.tisov.denis.platform.config.JVMConfigurator;
+import ru.tisov.denis.platform.da.ApplicationDao;
 import ru.tisov.denis.platform.da.ContainerDao;
 import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.docker.DockerClientFactory;
@@ -33,19 +34,17 @@ public class ContainerDaoImpl implements ContainerDao {
     private final DockerClientFactory dockerClientFactory;
     private final HostService hostService;
     private final EnvironmentDao environmentDao;
-    private final JVMConfigurator jvmConfigurator;
-    private final PropertyService propertyService;
+    private final ApplicationDao applicationDao;
 
     @Resource(name = "logQueue")
     private BlockingQueue<Log> logQueue;
 
     @Autowired
-    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao, JVMConfigurator jvmConfigurator, PropertyService propertyService) {
+    public ContainerDaoImpl(DockerClientFactory dockerClientFactory, HostService hostService, EnvironmentDao environmentDao, JVMConfigurator jvmConfigurator, PropertyService propertyService, ApplicationDao applicationDao) {
         this.dockerClientFactory = dockerClientFactory;
         this.hostService = hostService;
         this.environmentDao = environmentDao;
-        this.jvmConfigurator = jvmConfigurator;
-        this.propertyService = propertyService;
+        this.applicationDao = applicationDao;
     }
 
     @Override
@@ -114,7 +113,7 @@ public class ContainerDaoImpl implements ContainerDao {
             if (!networks.isEmpty())
                 params.setNetworkName(networks.get(0).getName());
 
-            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params, properties, jvmArgs));
+            dockerClient.pullImageCmd(fullImageName).exec(new StartAfterPullImageCallback(startAfterCreate, dockerClient, params, applicationDao, properties, jvmArgs));
         }
     }
 

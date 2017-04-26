@@ -9,6 +9,7 @@ import com.github.dockerjava.api.model.PullResponseItem;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.tisov.denis.platform.da.ApplicationDao;
 import ru.tisov.denis.platform.domain.Property;
 import ru.tisov.denis.platform.domain.StartContainerParams;
 import ru.tisov.denis.platform.service.impl.ContainerServiceImpl;
@@ -25,14 +26,16 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
     private final DockerClient dockerClient;
     private final boolean startAfterCreate;
     private final StartContainerParams params;
+    private final ApplicationDao  applicationDao;
     private List<Property> properties;
     private List<String> jvmArgs;
 
 
-    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params, List<Property> properties, List<String> jvmArgs) {
+    public StartAfterPullImageCallback(boolean startAfterCreate, DockerClient dockerClient, StartContainerParams params, ApplicationDao applicationDao, List<Property> properties, List<String> jvmArgs) {
         this.dockerClient = dockerClient;
         this.startAfterCreate = startAfterCreate;
         this.params = params;
+        this.applicationDao = applicationDao;
         this.properties = properties;
         this.jvmArgs = jvmArgs;
     }
@@ -72,6 +75,8 @@ public class StartAfterPullImageCallback implements ResultCallback<PullResponseI
         containerCmd.withEnv("JAVA_OPTS=" + join(" ", jvmArgs) + " " + getProperties(properties));
 
         CreateContainerResponse createContainerResponse = containerCmd.exec();
+
+        applicationDao.saveEnvironmentId(createContainerResponse.getId(), params.getEnvironment().getId());
 
         if (startAfterCreate) dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
     }

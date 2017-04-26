@@ -1,14 +1,17 @@
 package ru.tisov.denis.platform.da;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-import ru.tisov.denis.platform.domain.Application;
+import java.util.Map;
 
-import java.util.List;
+/**
+ * @author dinyat
+ *         26/04/2017
+ */
+public interface ApplicationDao {
 
-@Repository
-public interface ApplicationDao extends CrudRepository<Application, Long> {
+    Long getEnvironmentId(String containerId);
 
-    List<Application> getAllByHostId(Long hostId);
+    void saveEnvironmentId(String containerId, Long environmentId);
+
+    Map<String, Long> getAll();
 
 }
