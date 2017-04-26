@@ -1,16 +1,14 @@
 package ru.tisov.denis.platform.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "running_applications")
+@Table(name = "applications")
 public class Application {
 
     @Id
-    @Column(name = "application_id")
     private Long id;
     private String containerId;
     private Long hostId;

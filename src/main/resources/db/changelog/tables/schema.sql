@@ -1,11 +1,13 @@
 DROP TABLE IF EXISTS rel_environments_hosts;
 DROP TABLE IF EXISTS rel_environments_networks;
 DROP TABLE IF EXISTS environments;
-DROP TABLE IF EXISTS running_applications;
-DROP TABLE IF EXISTS images;
-DROP TABLE IF EXISTS hosts;
+DROP TABLE IF EXISTS applications;
 DROP TABLE IF EXISTS networks;
+DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS image_properties;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS jvm_args;
+
 
 CREATE TABLE networks
 (
@@ -70,12 +72,13 @@ CREATE TABLE images
 
 COMMIT;
 
-CREATE TABLE running_applications
+CREATE TABLE applications
 (
-  application_id          INTEGER IDENTITY PRIMARY KEY NOT NULL,
+  id          INTEGER IDENTITY PRIMARY KEY NOT NULL,
   container_id            VARCHAR(500),
   host_id                 INTEGER,
   image_id                INTEGER,
+  state                    INTEGER,
   FOREIGN KEY (host_id)   REFERENCES hosts (host_id),
   FOREIGN KEY (image_id)  REFERENCES images (image_id)
 );
