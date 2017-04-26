@@ -7,6 +7,7 @@ import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.domain.Environment;
 import ru.tisov.denis.platform.service.EnvironmentService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,6 +32,8 @@ public class EnvironmentServiceImpl implements EnvironmentService {
 
     @Override
     public Environment save(Environment environment) {
+        if (environment.getCreatedDate() == null) environment.setCreatedDate(LocalDateTime.now());
+        environment.setModifiedDate(LocalDateTime.now());
         return environmentDAO.save(environment);
     }
 }

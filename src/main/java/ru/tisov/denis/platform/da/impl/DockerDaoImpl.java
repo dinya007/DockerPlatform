@@ -1,6 +1,7 @@
 package ru.tisov.denis.platform.da.impl;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateNetworkResponse;
 import com.github.dockerjava.api.model.ContainerPort;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.domain.docker.ImageTags;
 import ru.tisov.denis.platform.domain.docker.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,8 +24,8 @@ public class DockerDaoImpl implements DockerDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerDaoImpl.class);
 
     private final DockerClient dockerClient;
-    private Host host;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final Host host;
 
     public DockerDaoImpl(DockerClient dockerClient, Host host) {
         this.dockerClient = dockerClient;
@@ -63,6 +65,20 @@ public class DockerDaoImpl implements DockerDao {
     public List<Container> getStoppedContainers() {
         List<Container> allContainers = getAllContainers();
         return allContainers.stream().filter(container -> !container.isRunning()).collect(Collectors.toList());
+    }
+
+    @Override
+    public String createNetwork(String name) {
+        if (!host.isSwarmMaster()) {
+            throw new IllegalStateException("Only swarm master host can create network");
+        }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("attachable", null);
+        CreateNetworkResponse response = dockerClient.createNetworkCmd()
+            .withDriver("overlay")
+            .withName(name)
+            .withOptions(params).exec();
+        return name;
     }
 
     private class ContainerMapper implements Function<com.github.dockerjava.api.model.Container, Container> {

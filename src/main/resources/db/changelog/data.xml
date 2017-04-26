@@ -22,6 +22,7 @@
             <column name="name" type="STRING"/>
             <column name="host_path" type="STRING"/>
             <column name="registry_flag" type="BOOLEAN"/>
+            <column name="swarm_master_flag" type="BOOLEAN"/>
             <column name="created_date" type="DATE"/>
             <column name="modified_date" type="DATE"/>
         </loadData>

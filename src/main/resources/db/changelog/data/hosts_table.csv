@@ -1,2 +1,2 @@
-"host_id","url","name","host_path","registry_flag","created_date","modified_date"
-0,192.168.99.100,default,"/Users/denis/.docker/machine/machines/default",true,now(),now()
+"host_id","url","name","host_path","registry_flag","swarm_master_flag","created_date","modified_date"
+0,192.168.99.100,default,"/Users/dinyat/.docker/machine/machines/default",true,true,now(),now()

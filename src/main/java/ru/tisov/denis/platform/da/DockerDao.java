@@ -15,4 +15,6 @@ public interface DockerDao {
 
     List<Container> getStoppedContainers();
 
+    String createNetwork(String name);
+
 }

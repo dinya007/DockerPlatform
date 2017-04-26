@@ -18,6 +18,8 @@ public class Host {
     private String hostPath;
     @Column(name = "registry_flag")
     private boolean isRegistry;
+    @Column(name = "swarm_master_flag")
+    private boolean isSwarmMaster;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -77,6 +79,15 @@ public class Host {
         isRegistry = registry;
     }
 
+
+    public boolean isSwarmMaster() {
+        return isSwarmMaster;
+    }
+
+    public void setSwarmMaster(boolean swarmMaster) {
+        isSwarmMaster = swarmMaster;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,13 +107,14 @@ public class Host {
     @Override
     public String toString() {
         return "Host{" +
-                "id=" + id +
-                ", url='" + url + '\'' +
-                ", name='" + name + '\'' +
-                ", hostPath='" + hostPath + '\'' +
-                ", isRegistry=" + isRegistry +
-                ", createdDate=" + createdDate +
-                ", modifiedDate=" + modifiedDate +
-                '}';
+            "id=" + id +
+            ", url='" + url + '\'' +
+            ", name='" + name + '\'' +
+            ", hostPath='" + hostPath + '\'' +
+            ", isRegistry=" + isRegistry +
+            ", isSwarmMaster=" + isSwarmMaster +
+            ", createdDate=" + createdDate +
+            ", modifiedDate=" + modifiedDate +
+            '}';
     }
 }

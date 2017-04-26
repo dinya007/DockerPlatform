@@ -36,6 +36,7 @@ CREATE TABLE hosts
   name           VARCHAR(100),
   host_path      VARCHAR(500),
   registry_flag  BOOLEAN,
+  swarm_master_flag  BOOLEAN,
   created_date   TIMESTAMP,
   modified_date  TIMESTAMP,
 );
