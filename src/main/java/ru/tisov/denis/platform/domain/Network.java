@@ -1,6 +1,5 @@
 package ru.tisov.denis.platform.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 public class Network {
 
     @Id
-    @Column(name = "network_id")
     private String id;
     private String name;
     private LocalDateTime createdDate;

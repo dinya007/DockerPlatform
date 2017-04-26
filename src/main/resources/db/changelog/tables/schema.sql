@@ -11,8 +11,7 @@ DROP TABLE IF EXISTS jvm_args;
 
 CREATE TABLE networks
 (
-  network_id INTEGER IDENTITY PRIMARY KEY NOT NULL,
-  docker_network_id VARCHAR(256) NOT NULL,
+  id             INTEGER IDENTITY PRIMARY KEY NOT NULL,
   name           VARCHAR(100),
   created_date   TIMESTAMP,
   modified_date  TIMESTAMP,
@@ -58,7 +57,7 @@ CREATE TABLE rel_environments_networks
   environment_id INTEGER,
   network_id     INTEGER,
   FOREIGN KEY (environment_id) REFERENCES environments (environment_id),
-  FOREIGN KEY (network_id) REFERENCES networks (network_id)
+  FOREIGN KEY (network_id) REFERENCES networks (id)
 );
 
 COMMIT;

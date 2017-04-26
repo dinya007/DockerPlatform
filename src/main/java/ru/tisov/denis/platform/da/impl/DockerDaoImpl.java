@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class DockerDaoImpl implements DockerDao {
 
-    private final Logger logger = LoggerFactory.getLogger(DockerDaoImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DockerDaoImpl.class);
 
     private final DockerClient dockerClient;
     private Host host;

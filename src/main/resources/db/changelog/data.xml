@@ -54,4 +54,22 @@
         </loadData>
     </changeSet>
 
+    <changeSet author="denis" id="fill_networks">
+        <loadData file="db/changelog/data/networks.csv"
+                  tableName="networks">
+            <column name="id" type="STRING"/>
+            <column name="name" type="STRING"/>
+            <column name="created_date" type="DATE"/>
+            <column name="modified_date" type="DATE"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet author="denis" id="fill_environments_networks_table">
+        <loadData file="db/changelog/data/rel_environments_networks_table.csv"
+                  tableName="rel_environments_networks">
+            <column name="environment_id" type="NUMERIC"/>
+            <column name="network_id" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
 </databaseChangeLog>
