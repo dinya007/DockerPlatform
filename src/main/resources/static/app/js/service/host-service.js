@@ -9,7 +9,7 @@ dockerApp.service('hostService', function (restService) {
     };
 
     this.getRunningContainers = function (hostId, environmentId) {
-        return restService.get('/hosts/' + environmentId + '/runningContainers/' + environmentId)
+        return restService.get('/hosts/' + hostId + '/runningContainers/' + environmentId)
     };
 
     this.getStoppedContainers = function (hostId, environmentId) {

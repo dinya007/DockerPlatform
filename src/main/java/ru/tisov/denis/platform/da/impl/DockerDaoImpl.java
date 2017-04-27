@@ -3,6 +3,7 @@ package ru.tisov.denis.platform.da.impl;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateNetworkResponse;
 import com.github.dockerjava.api.model.ContainerPort;
+import com.github.dockerjava.api.model.Info;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ public class DockerDaoImpl implements DockerDao {
     public DockerDaoImpl(DockerClient dockerClient, Host host) {
         this.dockerClient = dockerClient;
         this.host = host;
+        Info info = dockerClient.infoCmd().exec();
+        LOGGER.info(info.toString());
     }
 
     @Override
@@ -72,12 +75,11 @@ public class DockerDaoImpl implements DockerDao {
         if (!host.isSwarmMaster()) {
             throw new IllegalStateException("Only swarm master host can create network");
         }
-        HashMap<String, String> params = new HashMap<>();
-        params.put("attachable", null);
         CreateNetworkResponse response = dockerClient.createNetworkCmd()
             .withDriver("overlay")
             .withName(name)
-            .withOptions(params).exec();
+            .withAttachable(true)
+            .exec();
         return name;
     }
 

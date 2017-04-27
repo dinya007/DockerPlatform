@@ -34,7 +34,7 @@ public class EnvironmentController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
     public Environment createEnvironment(@RequestBody Environment environment) {
-        return environmentService.save(environment);
+        return environmentService.create(environment);
     }
 
 }

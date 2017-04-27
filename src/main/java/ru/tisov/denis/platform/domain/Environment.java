@@ -16,7 +16,7 @@ public class Environment {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "rel_environments_hosts",
             joinColumns = {@JoinColumn(name = "environment_id")},
             inverseJoinColumns = {@JoinColumn(name = "host_id")})
