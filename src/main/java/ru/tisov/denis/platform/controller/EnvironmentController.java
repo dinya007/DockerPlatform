@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.tisov.denis.platform.domain.Environment;
+import ru.tisov.denis.platform.domain.Host;
+import ru.tisov.denis.platform.domain.docker.Container;
 import ru.tisov.denis.platform.service.EnvironmentService;
 
 import java.util.List;
@@ -35,6 +37,12 @@ public class EnvironmentController {
     @ResponseBody
     public Environment createEnvironment(@RequestBody Environment environment) {
         return environmentService.create(environment);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{environmentId}", method = RequestMethod.POST)
+    public Environment addHost(@PathVariable Long environmentId, @RequestBody Host host) {
+        return environmentService.addHost(environmentId, host);
     }
 
 }

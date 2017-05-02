@@ -13,7 +13,7 @@
                 <div class="form-group">
                     <label for="swarmHosts">Swarm hosts:</label>
                     <select class="form-control" id="swarmHosts" ng-model="swarmHost">
-                        <option value="{{host}}" ng-repeat="host in allHosts">
+                        <option value="{{host}}" ng-repeat="host in allHosts | swarmMasters">
                             {{host.name}}
                         </option>
                     </select>

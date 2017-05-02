@@ -1,6 +1,9 @@
 dockerApp.controller('environmentController', function ($scope, $routeParams, $window, $timeout, environmentService, hostService, imageService, containerService) {
 
-    $scope.init = function(){
+    $scope.hosts = [];
+    $scope.allHosts = [];
+
+    $scope.init = function () {
         $scope.environmentId = $routeParams.environmentId;
 
         environmentService.getEnvironment($scope.environmentId)
@@ -20,16 +23,23 @@ dockerApp.controller('environmentController', function ($scope, $routeParams, $w
 
         imageService.getRepositoryImages()
             .then(function (data) {
-            $scope.repositoryImages = data;
-        });
+                $scope.repositoryImages = data;
+            });
 
     };
 
-    $scope.setSelectedHost = function(host){
+    $scope.addHost = function (host) {
+        environmentService.addHost($scope.activeEnvironment, host)
+            .then(function (data) {
+                $scope.activeEnvironment = data;
+            })
+    };
+
+    $scope.setSelectedHost = function (host) {
         $scope.selectedHost = host;
     };
 
-    $scope.setSelectedImage = function(image){
+    $scope.setSelectedImage = function (image) {
         $scope.selectedImage = image;
     };
 

@@ -12,4 +12,8 @@ dockerApp.service('environmentService', function (restService) {
         return restService.post('/environment', environment);
     };
 
+    this.addHost = function (environment, host) {
+        return restService.post('/environment/' + environment.id, host);
+    };
+
 });

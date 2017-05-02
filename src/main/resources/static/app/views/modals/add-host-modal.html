@@ -12,10 +12,12 @@
                     <tr>
                         <th class="text-center">Name</th>
                         <th class="text-center">URL</th>
+                        <th class="text-center">Action</th>
                     </tr>
-                    <tr ng-repeat="host in allHosts | minus:hosts">
+                    <tr ng-repeat="host in allHosts | minus : hosts">
                         <td>{{host.name}}</td>
                         <td>{{host.url}}</td>
+                        <td><button class="glyphicon glyphicon-plus" ng-click="addHost(host)" data-dismiss="modal"></button></td>
                     </tr>
                     </tbody>
                 </table>

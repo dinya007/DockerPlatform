@@ -18,18 +18,29 @@ dockerApp.config(function ($routeProvider) {
         });
 });
 
-dockerApp.filter('minus', function(){
-    return function(arr1, arr2){
-        return arr1.filter(function(n) {
-            return arr2.indexOf(n) === -1
-        });
+dockerApp.filter('minus', function () {
+    return function (allHosts, hosts) {
+        var newHosts = [];
+        for (var i = 0; i < allHosts.length; i++) {
+            var add = true;
+            for (var j = 0; j < hosts.length; j++) {
+                if (allHosts[i].id === hosts[j].id) add = false;
+            }
+            if (add) newHosts.push(allHosts[i]);
+        }
+        return newHosts;
     };
 });
 
-dockerApp.filter('swarmHosts', function(){
-    return function(arr1, arr2){
-        return arr1.filter(function(n) {
-            return arr2.indexOf(n) === -1
-        });
+dockerApp.filter('swarmMasters', function () {
+    return function (allHosts) {
+        if (allHosts !== undefined) {
+            var swarmHosts = [];
+            for (var i = 0; i < allHosts.length; i++) {
+                var host = allHosts[i];
+                if (host.swarmMaster) swarmHosts.push(host);
+            }
+            return swarmHosts;
+        }
     };
 });

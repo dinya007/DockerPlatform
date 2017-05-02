@@ -7,8 +7,10 @@ import ru.tisov.denis.platform.da.DockerDao;
 import ru.tisov.denis.platform.da.EnvironmentDao;
 import ru.tisov.denis.platform.docker.DockerDaoFactory;
 import ru.tisov.denis.platform.domain.Environment;
+import ru.tisov.denis.platform.domain.Host;
 import ru.tisov.denis.platform.domain.Network;
 import ru.tisov.denis.platform.service.EnvironmentService;
+import ru.tisov.denis.platform.service.HostService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +24,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
     private final DockerDaoFactory dockerDaoFactory;
 
     @Autowired
-    public EnvironmentServiceImpl(EnvironmentDao environmentDAO, DockerDaoFactory dockerDaoFactory) {
+    public EnvironmentServiceImpl(EnvironmentDao environmentDAO, DockerDaoFactory dockerDaoFactory, HostService hostService) {
         this.environmentDAO = environmentDAO;
         this.dockerDaoFactory = dockerDaoFactory;
     }
@@ -51,6 +53,13 @@ public class EnvironmentServiceImpl implements EnvironmentService {
             .createdDate(LocalDateTime.now())
             .modifiedDate(LocalDateTime.now())
             .build()));
+        return environmentDAO.save(environment);
+    }
+
+    @Override
+    public Environment addHost(Long environmentId, Host host) {
+        Environment environment = getById(environmentId);
+        environment.getHosts().add(host);
         return environmentDAO.save(environment);
     }
 }
