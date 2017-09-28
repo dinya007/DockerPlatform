@@ -1,2 +1,5 @@
 "host_id","url","name","host_path","registry_flag","swarm_master_flag","created_date","modified_date"
 0,192.168.99.100,default,"/Users/dinyat/.docker/machine/machines/default",true,true,now(),now()
+1,192.168.99.101,worker1,"/Users/dinyat/.docker/machine/machines/worker1",false,false,now(),now()
+2,192.168.99.102,swarm2,"/Users/dinyat/.docker/machine/machines/swarm2",false,true,now(),now()
+3,192.168.99.103,worker2,"/Users/dinyat/.docker/machine/machines/worker2",false,false,now(),now()
